@@ -2,7 +2,7 @@
 
 
 
-## Rol: Desarrollador
+## Roles: Project Manager, Desarrollador y DBA
 
 ### Desarrollador en Java
 ### Desarrollador Backend en Node.js y Express
