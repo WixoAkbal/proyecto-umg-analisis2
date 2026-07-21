@@ -1,6 +1,6 @@
 # Nombre: Luis Fernando Pérez Carrillo - 2294-09-2462 
 
-## Rol: Desarrollador 
+## Rol: Devops, Desarrollador y QA
 
 ### Desarrollador en Java
 ### Desarrollador de micro servicios en Spring-Boot
