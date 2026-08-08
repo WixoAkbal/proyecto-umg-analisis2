@@ -2,23 +2,23 @@ import { ApplicationConfig, provideBrowserGlobalErrorListeners } from '@angular/
 import { provideRouter } from '@angular/router';
 
 import { routes } from './app.routes';
-import { providePrimeNG } from 'primeng/config';
-import Aura from '@primeuix/themes/aura';
+import { provideClientHydration, withEventReplay } from '@angular/platform-browser';
+import { provideOptimus } from '@openng/optimus-ui/config';
+import Aura from '@openng/optimus-ui-themes/aura';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),
     provideRouter(routes),
-    providePrimeNG({
-      theme: {
+    provideClientHydration(withEventReplay()),
+    provideOptimus({ 
+      theme: { 
         preset: Aura,
         options: {
           prefix: 'p',
           darkModeSelector: 'white',
-          cssLayer: false,
-          cssVariables: true
         }
-      }
-    })
-  ]
+      } 
+    }),
+  ],
 };
