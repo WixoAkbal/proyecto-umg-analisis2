@@ -1,27 +1,95 @@
+drop database proyecto_umg_analisis2_db;
+
 create database proyecto_umg_analisis2_db;
+
+set @@session.time_zone = 'America/Guatemala';
+
+commit;
+
 use proyecto_umg_analisis2_db;
 
+
 create table estados_registro (
-id int auto_increment primary key,
-nombre varchar(50) not null unique,
-descripcion varchar(200),
-creado_por int null,
-fecha_hora_creado datetime not null default current_timestamp,
-modificado_por int null,
-fecha_hora_modificado datetime null on update current_timestamp,
-estado boolean not null default true
+	id int auto_increment primary key,
+	nombre varchar(50) not null unique,
+	descripcion varchar(200),
+	creado_por int not null,
+	fecha_hora_creado datetime not null default current_timestamp,
+	modificado_por int,
+	fecha_hora_modificado datetime on update current_timestamp,
+	estado boolean not null default true
 );
 
-create table roles (
-id int auto_increment primary key,
-nombre varchar(50) not null unique,
-descripcion varchar(200),
-creado_por int null,
-fecha_hora_creado datetime not null default current_timestamp,
-modificado_por int null,
-fecha_hora_modificado datetime null on update current_timestamp,
-estado boolean not null default true
+insert into estados_registro (nombre, descripcion, creado_por) values
+('Activo', 'Registro activo y en uso normal', 1),
+('Inactivo', 'Registro desactivado temporalmente', 1),
+('Eliminado', 'Registro eliminado logicamente, se conserva para trazabilidad', 1);
+
+select * from estados_registro;
+
+create table usuarios (
+	id int auto_increment primary key,
+	nombre varchar(100) not null,
+	apellido varchar(100) not null,
+	correo_electronico varchar(150) not null unique,
+	contrasenia varchar(250) not null,
+	creado_por int not null,
+	fecha_hora_creado datetime not null default current_timestamp,
+	modificado_por int,
+	fecha_hora_modificado datetime on update current_timestamp,
+	estado_id int not null,
+	estado_anterior_id int,
+	foreign key (creado_por) references usuarios(id),
+	foreign key (modificado_por) references usuarios(id),
+	foreign key (estado_id) references estados_registro(id),
+	foreign key (estado_anterior_id) references estados_registro(id)
 );
+
+insert into usuarios (nombre, apellido, correo_electronico, contrasenia, creado_por, estado_id) values
+('Admin', 'Admin', 'admin@email.com', 'admin123', 1, 1);
+
+select * from usuarios;
+
+create table roles (
+	id int auto_increment primary key,
+	nombre varchar(50) not null unique,
+	descripcion varchar(200),
+	creado_por int not null,
+	fecha_hora_creado datetime not null default current_timestamp,
+	modificado_por int null,
+	fecha_hora_modificado datetime null on update current_timestamp,
+	estado boolean not null default true
+);
+
+insert into roles (nombre, descripcion, creado_por) values
+('ADMIN', 'Usuario administrador del sistema', 1),
+('EVALUADOR', 'Usuario que evalua solicitudes', 1),
+('ESTUDIANTE', 'Usuario que aplica a becas', 1);
+
+select * from roles r;
+
+create table usuarios_roles (
+	usuario_id int not null,
+	rol_id int not null,
+	creado_por int null,
+	fecha_hora_creado datetime not null default current_timestamp,
+	modificado_por int null,
+	fecha_hora_modificado datetime null on update current_timestamp,
+	estado_id int not null,
+	estado_anterior_id int,
+	primary key (usuario_id, rol_id),
+	foreign key (usuario_id) references usuarios(id),
+	foreign key (rol_id) references roles(id),
+	foreign key (creado_por) references usuarios(id),
+	foreign key (modificado_por) references usuarios(id),
+	foreign key (estado_id) references estados_registro(id),
+	foreign key (estado_anterior_id) references estados_registro(id)
+);
+
+insert into usuarios_roles (usuario_id, rol_id, creado_por, estado_id) values
+(1, 1, 1, 1);
+
+select * from usuarios_roles;
 
 create table niveles_academicos (
 id int auto_increment primary key,
@@ -115,43 +183,6 @@ fecha_hora_modificado datetime null on update current_timestamp,
 estado boolean not null default true,
 foreign key (padre_id) references recursos(id) on delete set null,
 foreign key (servicio_id) references servicios(id) on delete restrict
-);
-
-
-create table usuarios (
-id int auto_increment primary key,
-nombre varchar(100) not null,
-apellido varchar(100) not null,
-email varchar(150) not null unique,
-contrasena varchar(255) not null,
-creado_por int null,
-fecha_hora_creado datetime not null default current_timestamp,
-modificado_por int null,
-fecha_hora_modificado datetime null on update current_timestamp,
-estado_id int null,
-estado_anterior_id int null,
-foreign key (creado_por) references usuarios(id) on delete set null,
-foreign key (modificado_por) references usuarios(id) on delete set null,
-foreign key (estado_id) references estados_registro(id) on delete set null,
-foreign key (estado_anterior_id) references estados_registro(id) on delete set null
-);
-
-create table usuarios_roles (
-usuario_id int not null,
-rol_id int not null,
-creado_por int null,
-fecha_hora_creado datetime not null default current_timestamp,
-modificado_por int null,
-fecha_hora_modificado datetime null on update current_timestamp,
-estado_id int null,
-estado_anterior_id int null,
-primary key (usuario_id, rol_id),
-foreign key (usuario_id) references usuarios(id) on delete cascade,
-foreign key (rol_id) references roles(id) on delete cascade,
-foreign key (creado_por) references usuarios(id) on delete set null,
-foreign key (modificado_por) references usuarios(id) on delete set null,
-foreign key (estado_id) references estados_registro(id) on delete set null,
-foreign key (estado_anterior_id) references estados_registro(id) on delete set null
 );
 
 
@@ -377,17 +408,6 @@ foreign key (estado_id) references estados_registro(id) on delete set null,
 foreign key (estado_anterior_id) references estados_registro(id) on delete set null,
 index idx_notificaciones_usuario (usuario_id)
 );
-
-
-insert into estados_registro (nombre, descripcion) values
-('activo', 'registro activo y en uso normal'),
-('inactivo', 'registro desactivado temporalmente'),
-('eliminado', 'registro eliminado logicamente, se conserva para trazabilidad');
-
-insert into roles (nombre, descripcion) values
-('estudiante', 'usuario que aplica a becas'),
-('evaluador', 'usuario que evalua solicitudes'),
-('admin', 'usuario administrador del sistema');
 
 insert into niveles_academicos (nombre, descripcion) values
 ('medio', 'educacion media'),
