@@ -8,6 +8,7 @@ import { PruebaModule } from './prueba/prueba.module';
 import { AuthModule } from './auth/auth.module';
 import { UserModule } from './user/user.module';
 import { UserRoleModule } from './user-role/user-role.module';
+import { EstadosRegistroModule } from './estados-registro/estados-registro.module';
 
 @Module({
   imports: [
@@ -32,7 +33,8 @@ import { UserRoleModule } from './user-role/user-role.module';
     AuthModule,
     UserModule,
     RolesModule,
-    UserRoleModule
+    UserRoleModule,
+    EstadosRegistroModule,
   ],
   controllers: [AppController],
   providers: [AppService],

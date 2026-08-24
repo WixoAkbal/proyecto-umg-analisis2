@@ -7,9 +7,10 @@ import {
   UpdateDateColumn,
   OneToMany,
 } from 'typeorm';
+import { AuditoriaCatalogo } from '../../base/entities/auditoria-catalogo.entity';
 
 @Entity('roles')
-export class Role {
+export class Role extends AuditoriaCatalogo {
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -19,19 +20,6 @@ export class Role {
   @Column({ type: 'varchar', length: 200, nullable: true })
   descripcion: string;
 
-  @Column({ name: 'creado_por', nullable: true })
-  creadoPor: number;
-
-  @CreateDateColumn({ name: 'fecha_hora_creado' })
-  fechaHoraCreado: Date;
-
-  @Column({ name: 'modificado_por', nullable: true })
-  modificadoPor: number;
-
-  @UpdateDateColumn({ name: 'fecha_hora_modificado', nullable: true })
-  fechaHoraModificado: Date;
-
   @OneToMany(() => UserRole, (userRole) => userRole.rol)
   usuarios: UserRole[];
-
 }
