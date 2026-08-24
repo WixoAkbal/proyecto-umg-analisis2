@@ -1,4 +1,4 @@
-import { Body, Controller, Get, HttpCode, HttpStatus, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, HttpCode, HttpStatus, Post } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { LoginRequestDto } from './dto/login-request.dto';
 import { Public, Roles } from './auth.decorator';
@@ -17,7 +17,7 @@ export class AuthController {
     }
 
     @Get('test-guard')
-    @Roles(Role.ADMIN)
+    @Roles(Role.ESTUDIANTE)
     testGuard(): string {
         return 'Si la valido';
     }

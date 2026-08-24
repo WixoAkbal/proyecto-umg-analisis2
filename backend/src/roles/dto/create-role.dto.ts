@@ -4,7 +4,7 @@ export class CreateRoleDto {
   @IsString()
   @IsNotEmpty()
   @MaxLength(50)
-  codigo: string;
+  nombre: string;
 
   @IsString()
   @MaxLength(200)
