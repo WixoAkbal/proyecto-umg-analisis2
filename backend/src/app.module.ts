@@ -9,6 +9,9 @@ import { AuthModule } from './auth/auth.module';
 import { UserModule } from './user/user.module';
 import { UserRoleModule } from './user-role/user-role.module';
 import { EstadosRegistroModule } from './estados-registro/estados-registro.module';
+import { TiposBecasModule } from './tipos-becas/tipos-becas.module';
+import { EstadosConvocatoriasModule } from './estados-convocatorias/estados-convocatorias.module';
+import { ConvocatoriasModule } from './convocatorias/convocatorias.module';
 
 @Module({
   imports: [
@@ -35,6 +38,9 @@ import { EstadosRegistroModule } from './estados-registro/estados-registro.modul
     RolesModule,
     UserRoleModule,
     EstadosRegistroModule,
+    TiposBecasModule,
+    EstadosConvocatoriasModule,
+    ConvocatoriasModule,
   ],
   controllers: [AppController],
   providers: [AppService],
