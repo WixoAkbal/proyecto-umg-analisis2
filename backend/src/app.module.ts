@@ -12,6 +12,8 @@ import { EstadosRegistroModule } from './estados-registro/estados-registro.modul
 import { TiposBecasModule } from './tipos-becas/tipos-becas.module';
 import { EstadosConvocatoriasModule } from './estados-convocatorias/estados-convocatorias.module';
 import { ConvocatoriasModule } from './convocatorias/convocatorias.module';
+import { PersonasModule } from './personas/personas.module';
+import { NivelesAcademicosModule } from './niveles-academicos/niveles-academicos.module';
 
 @Module({
   imports: [
@@ -41,6 +43,8 @@ import { ConvocatoriasModule } from './convocatorias/convocatorias.module';
     TiposBecasModule,
     EstadosConvocatoriasModule,
     ConvocatoriasModule,
+    PersonasModule,
+    NivelesAcademicosModule,
   ],
   controllers: [AppController],
   providers: [AppService],
