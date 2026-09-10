@@ -48,6 +48,12 @@ create table usuarios (
 insert into usuarios (nombre, apellido, correo_electronico, contrasenia, creado_por, estado_id) values
 ('Admin', 'Admin', 'admin@email.com', 'admin123', 1, 1);
 
+insert into usuarios (nombre, apellido, correo_electronico, contrasenia, creado_por, estado_id) values
+('Usuario', '1', 'usuario1@email.com', 'usuario1', 1, 1);
+
+insert into usuarios (nombre, apellido, correo_electronico, contrasenia, creado_por, estado_id) values
+('Usuario', '2', 'usuario2@email.com', 'admin123', 1, 1);
+
 select * from usuarios;
 
 create table roles (
@@ -69,6 +75,7 @@ insert into roles (nombre, descripcion, creado_por) values
 select * from roles r;
 
 create table usuarios_roles (
+	id int auto_increment primary key,
 	usuario_id int not null,
 	rol_id int not null,
 	creado_por int null,
@@ -77,7 +84,6 @@ create table usuarios_roles (
 	fecha_hora_modificado datetime null on update current_timestamp,
 	estado_id int not null,
 	estado_anterior_id int,
-	primary key (usuario_id, rol_id),
 	foreign key (usuario_id) references usuarios(id),
 	foreign key (rol_id) references roles(id),
 	foreign key (creado_por) references usuarios(id),
