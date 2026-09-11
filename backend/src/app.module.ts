@@ -14,6 +14,9 @@ import { EstadosConvocatoriasModule } from './estados-convocatorias/estados-conv
 import { ConvocatoriasModule } from './convocatorias/convocatorias.module';
 import { PersonasModule } from './personas/personas.module';
 import { NivelesAcademicosModule } from './niveles-academicos/niveles-academicos.module';
+import { EstadosSolicitudesModule } from './estados-solicitudes/estados-solicitudes.module';
+import { ComitesModule } from './comites/comites.module';
+import { ComitesMiembrosModule } from './comites-miembros/comites-miembros.module';
 
 @Module({
   imports: [
@@ -45,6 +48,9 @@ import { NivelesAcademicosModule } from './niveles-academicos/niveles-academicos
     ConvocatoriasModule,
     PersonasModule,
     NivelesAcademicosModule,
+    EstadosSolicitudesModule,
+    ComitesModule,
+    ComitesMiembrosModule,
   ],
   controllers: [AppController],
   providers: [AppService],
