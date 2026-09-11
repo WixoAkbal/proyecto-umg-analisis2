@@ -8,7 +8,6 @@ import { AuthGuard } from './auth.guard';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { PassportModule } from '@nestjs/passport';
 import { JwtStrategy } from './jwt/jwt.strategy';
-import { JwtAuthGuard } from './jwt/jwt-auth.guard';
 import { RolesGuard } from './roles/roles.guard';
 
 @Module({

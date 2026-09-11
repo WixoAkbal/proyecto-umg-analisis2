@@ -8,16 +8,16 @@ export class User extends AuditoriaOperativa {
   id: number;
 
   @Column({ name: 'nombre', length: 100, nullable: false })
-  nombre: string;
+  nombre: String;
 
   @Column({ name: 'apellido', length: 100, nullable: false })
-  apellido: string;
+  apellido: String;
 
   @Column({ name: 'correo_electronico', length: 150, unique: true })
-  correoElectronico: string;
+  correoElectronico: String;
 
   @Column({ name: 'contrasenia', length: 250, nullable: false })
-  contrasenia: string;
+  contrasenia: String;
 
   @OneToMany(() => UserRole, (userRole) => userRole.usuario)
   roles: UserRole[];

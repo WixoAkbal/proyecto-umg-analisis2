@@ -7,46 +7,48 @@ import { UpdateRoleDto } from './dto/update-role.dto';
 
 @Injectable()
 export class RolesService {
-  constructor(
-    @InjectRepository(Role)
-    private readonly roleRepository: Repository<Role>,
-  ) {}
+	constructor(
+		@InjectRepository(Role)
+		private readonly roleRepository: Repository<Role>,
+	) { }
 
-  create(createRoleDto: CreateRoleDto, usuarioId: number) {
-    const nuevoRol = this.roleRepository.create({
-      ...createRoleDto,
-      creadoPor: usuarioId,
-    });
-    return this.roleRepository.save(nuevoRol);
-  }
+	create(createRoleDto: CreateRoleDto, usuarioId: number) {
+		const nuevoRol = this.roleRepository.create({
+			...createRoleDto,
+			creadoPor: usuarioId,
+		});
+		return this.roleRepository.save(nuevoRol);
+	}
 
-  findAll() {
-    return this.roleRepository.find({ where: { estado: true } });
-  }
+	findAll() {
+		return this.roleRepository.find({ where: { estado: true } });
+	}
 
-  async findOne(id: number) {
-    const rol = await this.roleRepository.findOneBy({ id, estado: true });
-    if (!rol) {
-      throw new NotFoundException(`No se encontro el r{id}`);
-    }
-    return rol;
-  }
+	async findOne(id: number) {
+		const rol = await this.roleRepository.findOneBy({ id, estado: true });
+		
+		if (!rol) {
+			throw new NotFoundException('No se ha encontrado el rol.');
+		}
+		
+		return rol;
+	}
 
-  async update(id: number, updateRoleDto: UpdateRoleDto, usuarioId: number) {
-    await this.findOne(id);
-    await this.roleRepository.update(id, {
-      ...updateRoleDto,
-      modificadoPor: usuarioId,
-    });
-    return this.findOne(id);
-  }
+	async update(id: number, updateRoleDto: UpdateRoleDto, usuarioId: number) {
+		await this.findOne(id);
+		await this.roleRepository.update(id, {
+			...updateRoleDto,
+			modificadoPor: usuarioId,
+		});
+		return this.findOne(id);
+	}
 
-  async remove(id: number, usuarioId: number) {
-    await this.findOne(id);
-    await this.roleRepository.update(id, {
-      estado: false,
-      modificadoPor: usuarioId,
-    });
-    return { message: 'Borrado exitoso' };
-  }
+	async remove(id: number, usuarioId: number) {
+		await this.findOne(id);
+		await this.roleRepository.update(id, {
+			estado: false,
+			modificadoPor: usuarioId,
+		});
+		return { message: 'Borrado exitoso' };
+	}
 }

@@ -8,5 +8,6 @@ import { EstadoRegistro } from './entities/estados-registro.entity';
   imports: [TypeOrmModule.forFeature([EstadoRegistro])],
   controllers: [EstadosRegistroController],
   providers: [EstadosRegistroService],
+  exports: [EstadosRegistroService]
 })
 export class EstadosRegistroModule {}
