@@ -17,6 +17,9 @@ import { NivelesAcademicosModule } from './niveles-academicos/niveles-academicos
 import { EstadosSolicitudesModule } from './estados-solicitudes/estados-solicitudes.module';
 import { ComitesModule } from './comites/comites.module';
 import { ComitesMiembrosModule } from './comites-miembros/comites-miembros.module';
+import { SolicitudesModule } from './solicitudes/solicitudes.module';
+import { TiposDocumentosModule } from './tipos-documentos/tipos-documentos.module';
+import { DocumentosModule } from './documentos/documentos.module';
 
 @Module({
   imports: [
@@ -51,6 +54,9 @@ import { ComitesMiembrosModule } from './comites-miembros/comites-miembros.modul
     EstadosSolicitudesModule,
     ComitesModule,
     ComitesMiembrosModule,
+    SolicitudesModule,
+    TiposDocumentosModule,
+    DocumentosModule,
   ],
   controllers: [AppController],
   providers: [AppService],
