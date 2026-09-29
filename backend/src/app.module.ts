@@ -20,6 +20,9 @@ import { ComitesMiembrosModule } from './comites-miembros/comites-miembros.modul
 import { SolicitudesModule } from './solicitudes/solicitudes.module';
 import { TiposDocumentosModule } from './tipos-documentos/tipos-documentos.module';
 import { DocumentosModule } from './documentos/documentos.module';
+import { EvaluacionesModule } from './evaluaciones/evaluaciones.module';
+import { NotificacionesModule } from './notificaciones/notificaciones.module';
+import { HistorialEstadosModule } from './historial-estados/historial-estados.module';
 
 @Module({
   imports: [
@@ -57,6 +60,9 @@ import { DocumentosModule } from './documentos/documentos.module';
     SolicitudesModule,
     TiposDocumentosModule,
     DocumentosModule,
+    EvaluacionesModule,
+    NotificacionesModule,
+    HistorialEstadosModule,
   ],
   controllers: [AppController],
   providers: [AppService],
