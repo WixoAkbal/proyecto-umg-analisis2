@@ -20,5 +20,6 @@ import { EstadoRegistro } from '../estados-registro/entities/estados-registro.en
   ],
   controllers: [HistorialEstadosController],
   providers: [HistorialEstadosService],
+  exports: [HistorialEstadosService],
 })
 export class HistorialEstadosModule {}

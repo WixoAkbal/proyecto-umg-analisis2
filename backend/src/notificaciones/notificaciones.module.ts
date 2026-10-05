@@ -10,5 +10,6 @@ import { EstadoRegistro } from '../estados-registro/entities/estados-registro.en
   imports: [TypeOrmModule.forFeature([Notificacion, User, EstadoRegistro])],
   controllers: [NotificacionesController],
   providers: [NotificacionesService],
+  exports: [NotificacionesService],
 })
 export class NotificacionesModule {}
