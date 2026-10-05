@@ -8,6 +8,8 @@ import { Convocatoria } from '../convocatorias/entities/convocatoria.entity';
 import { Comite } from '../comites/entities/comite.entity';
 import { EstadosSolicitud } from '../estados-solicitudes/entities/estados-solicitude.entity';
 import { EstadoRegistro } from '../estados-registro/entities/estados-registro.entity';
+import { HistorialEstadosModule } from '../historial-estados/historial-estados.module';
+import { NotificacionesModule } from '../notificaciones/notificaciones.module';
 
 @Module({
   imports: [
@@ -19,6 +21,8 @@ import { EstadoRegistro } from '../estados-registro/entities/estados-registro.en
       EstadosSolicitud,
       EstadoRegistro,
     ]),
+    HistorialEstadosModule,
+    NotificacionesModule,
   ],
   controllers: [SolicitudesController],
   providers: [SolicitudesService],
