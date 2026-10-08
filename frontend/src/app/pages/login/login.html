@@ -1,0 +1,26 @@
+<div class="flex min-h-screen items-center justify-center p-4">
+  <p-card header="Iniciar sesión" class="w-full max-w-sm">
+    <form (ngSubmit)="iniciarSesion()" class="flex flex-col gap-4">
+      <input
+        pInputText
+        name="username"
+        [(ngModel)]="username"
+        placeholder="Correo electrónico"
+        autocomplete="username"
+        required
+      />
+      <p-password
+        name="password"
+        [(ngModel)]="password"
+        placeholder="Contraseña"
+        [feedback]="false"
+        [toggleMask]="true"
+        [fluid]="true"
+      />
+      @if (error()) {
+        <small class="text-red-500">{{ error() }}</small>
+      }
+      <p-button type="submit" label="Entrar" [loading]="cargando()" />
+    </form>
+  </p-card>
+</div>
