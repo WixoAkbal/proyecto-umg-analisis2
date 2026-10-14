@@ -7,9 +7,21 @@ export const routes: Routes = [
     loadComponent: () => import('./pages/login/login').then((m) => m.Login),
   },
   {
-    path: 'tipos-becas',
+    path: '',
     canActivate: [authGuard],
-    loadComponent: () => import('./pages/tipos-becas/tipos-becas').then((m) => m.TiposBecas),
+    loadComponent: () => import('./layout/layout').then((m) => m.Layout),
+    children: [
+      {
+        path: 'tipos-becas',
+        loadComponent: () => import('./pages/tipos-becas/tipos-becas').then((m) => m.TiposBecas),
+      },
+      {
+        path: 'convocatorias',
+        loadComponent: () =>
+          import('./pages/convocatorias/convocatorias').then((m) => m.Convocatorias),
+      },
+      { path: '', redirectTo: 'tipos-becas', pathMatch: 'full' },
+    ],
   },
-  { path: '', redirectTo: 'login', pathMatch: 'full' },
+  { path: '**', redirectTo: '' },
 ];
