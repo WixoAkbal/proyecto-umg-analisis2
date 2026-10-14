@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Not, Repository } from 'typeorm';
 import { Convocatoria } from './entities/convocatoria.entity';
 import { EstadoRegistro } from '../estados-registro/entities/estados-registro.entity';
 import { CreateConvocatoriaDto } from './dto/create-convocatoria.dto';
@@ -40,9 +40,9 @@ export class ConvocatoriasService {
     });
     return this.convocatoriaRepository.save(nuevaConvocatoria);
   }
-
   findAll() {
     return this.convocatoriaRepository.find({
+      where: { estado: { nombre: Not('eliminado') } },
       relations: {
         tipoBeca: true,
         estadoConvocatoria: true,
@@ -53,7 +53,7 @@ export class ConvocatoriasService {
 
   async findOne(id: number) {
     const convocatoria = await this.convocatoriaRepository.findOne({
-      where: { id },
+      where: { id, estado: { nombre: Not('eliminado') } },
       relations: {
         tipoBeca: true,
         estadoConvocatoria: true,
@@ -67,7 +67,6 @@ export class ConvocatoriasService {
     }
     return convocatoria;
   }
-
   async update(
     id: number,
     updateConvocatoriaDto: UpdateConvocatoriaDto,

@@ -35,6 +35,21 @@ export class AuthService {
     return this.getToken() !== null;
   }
 
+  getRoles(): string[] {
+    const token = this.getToken();
+    if (!token) return [];
+    try {
+      const base64 = token.split('.')[1].replace(/-/g, '+').replace(/_/g, '/');
+      return JSON.parse(atob(base64)).roles ?? [];
+    } catch {
+      return [];
+    }
+  }
+
+  esAdmin(): boolean {
+    return this.getRoles().some((rol) => rol.toUpperCase() === 'ADMIN');
+  }
+
   private guardarToken(token: string): void {
     if (this.esNavegador) {
       localStorage.setItem(this.claveToken, token);
