@@ -50,6 +50,11 @@ export class AuthService {
     return this.getRoles().some((rol) => rol.toUpperCase() === 'ADMIN');
   }
 
+  tieneRol(...roles: string[]): boolean {
+    const mios = this.getRoles().map((rol) => rol.toUpperCase());
+    return roles.some((rol) => mios.includes(rol.toUpperCase()));
+  }
+
   private guardarToken(token: string): void {
     if (this.esNavegador) {
       localStorage.setItem(this.claveToken, token);

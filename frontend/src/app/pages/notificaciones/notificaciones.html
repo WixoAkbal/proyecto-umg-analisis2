@@ -1,0 +1,44 @@
+<div class="p-4">
+  <div class="mb-4 flex items-baseline justify-between">
+    <h2 class="text-xl font-semibold">Notificaciones</h2>
+    <span class="text-sm text-gray-500">
+      @if (sinLeer() === 0) {
+        Estás al día
+      } @else {
+        {{ sinLeer() }} sin leer
+      }
+    </span>
+  </div>
+
+  @if (error()) {
+    <small class="text-red-500">{{ error() }}</small>
+  }
+
+  <p-table [value]="notificaciones()" [loading]="cargando()" [tableStyle]="{ 'min-width': '30rem' }">
+    <ng-template #header>
+      <tr>
+        <th>Mensaje</th>
+        <th>Fecha</th>
+        <th>Estado</th>
+        <th>Acciones</th>
+      </tr>
+    </ng-template>
+    <ng-template #body let-n>
+      <tr [class.font-semibold]="!n.leida">
+        <td>{{ n.mensaje }}</td>
+        <td>{{ n.fechaHoraCreado | date: 'dd/MM/yyyy HH:mm' }}</td>
+        <td>{{ n.leida ? 'Leída' : 'Nueva' }}</td>
+        <td>
+          @if (!n.leida) {
+            <p-button label="Marcar como leída" [text]="true" (onClick)="marcarLeida(n)" />
+          }
+        </td>
+      </tr>
+    </ng-template>
+    <ng-template #emptymessage>
+      <tr>
+        <td colspan="4">No tienes notificaciones.</td>
+      </tr>
+    </ng-template>
+  </p-table>
+</div>
