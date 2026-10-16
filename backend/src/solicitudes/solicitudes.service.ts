@@ -1,12 +1,23 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  ForbiddenException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Not, Repository } from 'typeorm';
+import { Persona } from '../personas/entities/persona.entity';
+import { Convocatoria } from '../convocatorias/entities/convocatoria.entity';
 import { Solicitud } from './entities/solicitude.entity';
 import { EstadoRegistro } from '../estados-registro/entities/estados-registro.entity';
 import { CreateSolicitudeDto } from './dto/create-solicitude.dto';
 import { UpdateSolicitudeDto } from './dto/update-solicitude.dto';
 import { HistorialEstadosService } from '../historial-estados/historial-estados.service';
 import { NotificacionesService } from '../notificaciones/notificaciones.service';
+
+const ESTADO_PENDIENTE = 1;
+const ESTADO_EN_EVALUACION = 2;
+const ESTADO_CANCELADA = 5;
 
 @Injectable()
 export class SolicitudesService {
@@ -45,6 +56,7 @@ export class SolicitudesService {
 
   findAll() {
     return this.solicitudRepository.find({
+      where: { estado: { nombre: Not('eliminado') } },
       relations: {
         persona: true,
         convocatoria: true,
@@ -57,7 +69,7 @@ export class SolicitudesService {
 
   async findOne(id: number) {
     const solicitud = await this.solicitudRepository.findOne({
-      where: { id },
+      where: { id, estado: { nombre: Not('eliminado') } },
       relations: {
         persona: true,
         convocatoria: true,
@@ -70,6 +82,93 @@ export class SolicitudesService {
       throw new NotFoundException(`No se encontro la solicitud con id ${id}`);
     }
     return solicitud;
+  }
+    private async personaDelUsuario(usuarioId: number) {
+    const persona = await this.solicitudRepository.manager.findOne(Persona, {
+      where: {
+        usuario: { id: usuarioId },
+        estado: { nombre: Not('eliminado') },
+      },
+    });
+    if (!persona) {
+      throw new NotFoundException(
+        'Tu usuario no tiene un perfil de persona registrado',
+      );
+    }
+    return persona;
+  }
+
+  async findByUsuario(usuarioId: number) {
+    const persona = await this.personaDelUsuario(usuarioId);
+    return this.solicitudRepository.find({
+      where: {
+        persona: { id: persona.id },
+        estado: { nombre: Not('eliminado') },
+      },
+      relations: { convocatoria: true, estadoSolicitud: true },
+      order: { id: 'DESC' },
+    });
+  }
+
+  async crearPropia(convocatoriaId: number, usuarioId: number) {
+    const persona = await this.personaDelUsuario(usuarioId);
+
+    const convocatoria = await this.solicitudRepository.manager.findOne(
+      Convocatoria,
+      {
+        where: { id: convocatoriaId, estado: { nombre: Not('eliminado') } },
+        relations: { estadoConvocatoria: true },
+      },
+    );
+    if (!convocatoria) {
+      throw new NotFoundException(
+        `No se encontro la convocatoria con id ${convocatoriaId}`,
+      );
+    }
+    if (convocatoria.estadoConvocatoria?.nombre?.toLowerCase() !== 'activa') {
+      throw new BadRequestException('La convocatoria no esta activa');
+    }
+
+    const yaExiste = await this.solicitudRepository.findOne({
+      where: {
+        persona: { id: persona.id },
+        convocatoria: { id: convocatoriaId },
+        estado: { nombre: Not('eliminado') },
+        estadoSolicitud: { id: Not(ESTADO_CANCELADA) },
+      },
+    });
+    if (yaExiste) {
+      throw new BadRequestException(
+        'Ya tienes una solicitud en esta convocatoria',
+      );
+    }
+
+    return this.create(
+      {
+        personaId: persona.id,
+        convocatoriaId,
+        estadoSolicitudId: ESTADO_PENDIENTE,
+      },
+      usuarioId,
+    );
+  }
+
+  async cancelarPropia(id: number, usuarioId: number) {
+    const persona = await this.personaDelUsuario(usuarioId);
+    const solicitud = await this.findOne(id);
+
+    if (solicitud.persona?.id !== persona.id) {
+      throw new ForbiddenException('Esta solicitud no te pertenece');
+    }
+
+    const estadoActual = solicitud.estadoSolicitud?.id;
+    if (estadoActual !== ESTADO_PENDIENTE && estadoActual !== ESTADO_EN_EVALUACION) {
+      throw new BadRequestException(
+        'Solo se puede cancelar una solicitud pendiente o en evaluacion',
+      );
+    }
+
+    return this.update(id, { estadoSolicitudId: ESTADO_CANCELADA }, usuarioId);
   }
 
   async update(
