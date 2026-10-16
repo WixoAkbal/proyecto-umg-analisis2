@@ -16,11 +16,13 @@ export class EvaluacionesController {
     return this.evaluacionesService.create(createEvaluacioneDto, usuarioId);
   }
 
+  @Roles(Role.ADMIN, Role.EVALUADOR)
   @Get()
   findAll() {
     return this.evaluacionesService.findAll();
   }
 
+  @Roles(Role.ADMIN, Role.EVALUADOR)
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.evaluacionesService.findOne(+id);

@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Not, Repository } from 'typeorm';
 import { Evaluacion } from './entities/evaluacione.entity';
 import { EstadoRegistro } from '../estados-registro/entities/estados-registro.entity';
 import { CreateEvaluacioneDto } from './dto/create-evaluacione.dto';
@@ -35,19 +35,20 @@ export class EvaluacionesService {
     return this.evaluacionRepository.save(nuevaEvaluacion);
   }
 
-  findAll() {
+    findAll() {
     return this.evaluacionRepository.find({
+      where: { estado: { nombre: Not('eliminado') } },
       relations: { solicitud: true, comite: true, estado: true },
     });
   }
 
   async findOne(id: number) {
     const evaluacion = await this.evaluacionRepository.findOne({
-      where: { id },
+      where: { id, estado: { nombre: Not('eliminado') } },
       relations: { solicitud: true, comite: true, estado: true },
     });
     if (!evaluacion) {
-      throw new NotFoundException(`No se encontró la evaluacion con id ${id}`);
+      throw new NotFoundException(`No se encontro la evaluacion con id ${id}`);
     }
     return evaluacion;
   }

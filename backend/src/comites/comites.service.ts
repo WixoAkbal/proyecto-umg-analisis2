@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Not, Repository } from 'typeorm';
 import { Comite } from './entities/comite.entity';
 import { EstadoRegistro } from '../estados-registro/entities/estados-registro.entity';
 import { CreateComiteDto } from './dto/create-comite.dto';
@@ -31,15 +31,16 @@ export class ComitesService {
     return this.comiteRepository.save(nuevoComite);
   }
 
-  findAll() {
+   findAll() {
     return this.comiteRepository.find({
+      where: { estado: { nombre: Not('eliminado') } },
       relations: { estado: true },
     });
   }
 
   async findOne(id: number) {
     const comite = await this.comiteRepository.findOne({
-      where: { id },
+      where: { id, estado: { nombre: Not('eliminado') } },
       relations: { estado: true },
     });
     if (!comite) {

@@ -17,6 +17,38 @@
         >
           Convocatorias
         </a>
+        @if (veSolicitudes()) {
+          <a
+            routerLink="/solicitudes"
+            routerLinkActive="bg-gray-100 font-semibold"
+            class="rounded px-3 py-2 hover:bg-gray-100"
+          >
+            Solicitudes
+          </a>
+          <a
+            routerLink="/evaluaciones"
+            routerLinkActive="bg-gray-100 font-semibold"
+            class="rounded px-3 py-2 hover:bg-gray-100"
+          >
+            Evaluaciones
+          </a>
+        }
+        @if (veMisSolicitudes()) {
+          <a
+            routerLink="/mis-solicitudes"
+            routerLinkActive="bg-gray-100 font-semibold"
+            class="rounded px-3 py-2 hover:bg-gray-100"
+          >
+            Mis solicitudes
+          </a>
+        }
+        <a
+          routerLink="/notificaciones"
+          routerLinkActive="bg-gray-100 font-semibold"
+          class="rounded px-3 py-2 hover:bg-gray-100"
+        >
+          Notificaciones
+        </a>
       </nav>
     </div>
     <p-button

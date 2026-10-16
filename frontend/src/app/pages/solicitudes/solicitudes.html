@@ -1,0 +1,41 @@
+<div class="p-4">
+  <h2 class="mb-4 text-xl font-semibold">Solicitudes</h2>
+
+  @if (error()) {
+    <small class="text-red-500">{{ error() }}</small>
+  }
+
+  <p-table [value]="solicitudes()" [loading]="cargando()" [tableStyle]="{ 'min-width': '40rem' }">
+    <ng-template #header>
+      <tr>
+        <th>ID</th>
+        <th>Estudiante</th>
+        <th>Convocatoria</th>
+        <th>Estado</th>
+      </tr>
+    </ng-template>
+    <ng-template #body let-s>
+      <tr>
+        <td>{{ s.id }}</td>
+        <td>{{ nombrePersona(s) }}</td>
+        <td>{{ s.convocatoria?.nombre ?? '—' }}</td>
+        <td>
+          <select
+            [ngModel]="s.estadoSolicitud?.id"
+            (ngModelChange)="cambiarEstado(s, $event)"
+            class="rounded-md border border-gray-300 p-2"
+          >
+            @for (e of estados(); track e.id) {
+              <option [ngValue]="e.id">{{ etiqueta(e.nombre) }}</option>
+            }
+          </select>
+        </td>
+      </tr>
+    </ng-template>
+    <ng-template #emptymessage>
+      <tr>
+        <td colspan="4">No hay solicitudes registradas.</td>
+      </tr>
+    </ng-template>
+  </p-table>
+</div>

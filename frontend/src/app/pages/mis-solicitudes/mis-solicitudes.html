@@ -1,0 +1,95 @@
+<div class="p-4">
+  <div class="mb-4 flex items-center justify-between">
+    <h2 class="text-xl font-semibold">Mis solicitudes</h2>
+    <p-button label="Nueva solicitud" icon="pi pi-plus" (onClick)="abrirNueva()" />
+  </div>
+
+  @if (error()) {
+    <small class="text-red-500">{{ error() }}</small>
+  }
+
+  <p-table [value]="solicitudes()" [loading]="cargando()" [tableStyle]="{ 'min-width': '30rem' }">
+    <ng-template #header>
+      <tr>
+        <th>ID</th>
+        <th>Convocatoria</th>
+        <th>Estado</th>
+        <th>Acciones</th>
+      </tr>
+    </ng-template>
+    <ng-template #body let-s>
+      <tr>
+        <td>{{ s.id }}</td>
+        <td>{{ s.convocatoria?.nombre ?? '—' }}</td>
+        <td>{{ etiqueta(s.estadoSolicitud?.nombre) }}</td>
+        <td>
+          @if (puedeCancelar(s)) {
+            <p-button label="Cancelar" severity="danger" [text]="true" (onClick)="pedirCancelar(s)" />
+          }
+        </td>
+      </tr>
+    </ng-template>
+    <ng-template #emptymessage>
+      <tr>
+        <td colspan="4">Todavía no tienes solicitudes.</td>
+      </tr>
+    </ng-template>
+  </p-table>
+</div>
+
+<p-dialog
+  header="Nueva solicitud"
+  [modal]="true"
+  [visible]="dialogoVisible()"
+  (visibleChange)="dialogoVisible.set($event)"
+  [style]="{ width: '28rem' }"
+>
+  <div class="flex flex-col gap-4">
+    @if (convocatoriasActivas().length === 0) {
+      <p>No hay convocatorias activas en este momento.</p>
+    } @else {
+      <div class="flex flex-col gap-1">
+        <label for="convocatoria">Convocatoria</label>
+        <select
+          id="convocatoria"
+          [(ngModel)]="convocatoriaId"
+          class="rounded-md border border-gray-300 p-2"
+        >
+          <option [ngValue]="null">Selecciona...</option>
+          @for (c of convocatoriasActivas(); track c.id) {
+            <option [ngValue]="c.id">{{ c.nombre }}</option>
+          }
+        </select>
+      </div>
+    }
+    @if (errorForm()) {
+      <small class="text-red-500">{{ errorForm() }}</small>
+    }
+    <div class="flex justify-end gap-2">
+      <p-button label="Cerrar" severity="secondary" (onClick)="dialogoVisible.set(false)" />
+      <p-button label="Enviar solicitud" [loading]="enviando()" (onClick)="enviar()" />
+    </div>
+  </div>
+</p-dialog>
+
+<p-dialog
+  header="Cancelar solicitud"
+  [modal]="true"
+  [visible]="confirmarVisible()"
+  (visibleChange)="confirmarVisible.set($event)"
+  [style]="{ width: '26rem' }"
+>
+  <div class="flex flex-col gap-4">
+    <p>
+      ¿Seguro que quieres cancelar tu solicitud a
+      <strong>{{ solicitudACancelar?.convocatoria?.nombre }}</strong>?
+    </p>
+    @if (errorCancelar()) {
+      <small class="text-red-500">{{ errorCancelar() }}</small>
+    }
+    <div class="flex justify-end gap-2">
+      <p-button label="Volver" severity="secondary" (onClick)="confirmarVisible.set(false)" />
+      <p-button label="Cancelar solicitud" severity="danger" [loading]="cancelando()" (onClick)="confirmarCancelar()" />
+    </div>
+  </div>
+</p-dialog>

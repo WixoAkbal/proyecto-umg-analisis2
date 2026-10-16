@@ -1,0 +1,126 @@
+<div class="p-4">
+  <div class="mb-4 flex items-center justify-between">
+    <h2 class="text-xl font-semibold">Evaluaciones</h2>
+    <p-button label="Nueva" icon="pi pi-plus" (onClick)="nuevo()" />
+  </div>
+
+  @if (error()) {
+    <small class="text-red-500">{{ error() }}</small>
+  }
+
+  <p-table [value]="evaluaciones()" [loading]="cargando()" [tableStyle]="{ 'min-width': '45rem' }">
+    <ng-template #header>
+      <tr>
+        <th>ID</th>
+        <th>Solicitud</th>
+        <th>Comité</th>
+        <th>Puntaje</th>
+        <th>Observaciones</th>
+        <th>Acciones</th>
+      </tr>
+    </ng-template>
+    <ng-template #body let-e>
+      <tr>
+        <td>{{ e.id }}</td>
+        <td>{{ descripcionSolicitud(e.solicitud?.id) }}</td>
+        <td>{{ e.comite?.nombre ?? '—' }}</td>
+        <td>{{ e.puntaje }}</td>
+        <td>{{ e.observaciones }}</td>
+        <td>
+          <div class="flex gap-1">
+            <p-button icon="pi pi-pencil" [text]="true" [rounded]="true" (onClick)="editar(e)" />
+            @if (esAdmin()) {
+              <p-button
+                icon="pi pi-trash"
+                severity="danger"
+                [text]="true"
+                [rounded]="true"
+                (onClick)="pedirEliminar(e)"
+              />
+            }
+          </div>
+        </td>
+      </tr>
+    </ng-template>
+    <ng-template #emptymessage>
+      <tr>
+        <td colspan="6">No hay evaluaciones registradas.</td>
+      </tr>
+    </ng-template>
+  </p-table>
+</div>
+
+<p-dialog
+  [header]="editandoId === null ? 'Nueva evaluación' : 'Editar evaluación'"
+  [modal]="true"
+  [visible]="dialogoVisible()"
+  (visibleChange)="dialogoVisible.set($event)"
+  [style]="{ width: '32rem' }"
+>
+  <form (ngSubmit)="guardar()" class="flex flex-col gap-4">
+    <div class="flex flex-col gap-1">
+      <label for="solicitud">Solicitud</label>
+      <select id="solicitud" name="solicitud" [(ngModel)]="solicitudId" class="rounded-md border border-gray-300 p-2">
+        <option [ngValue]="null">Selecciona...</option>
+        @for (s of solicitudes(); track s.id) {
+          <option [ngValue]="s.id">{{ descripcionSolicitud(s.id) }}</option>
+        }
+      </select>
+    </div>
+    <div class="flex flex-col gap-1">
+      <label for="comite">Comité</label>
+      @if (comites().length === 0) {
+        <small class="text-red-500">No hay comités registrados.</small>
+      }
+      <select id="comite" name="comite" [(ngModel)]="comiteId" class="rounded-md border border-gray-300 p-2">
+        <option [ngValue]="null">Selecciona...</option>
+        @for (c of comites(); track c.id) {
+          <option [ngValue]="c.id">{{ c.nombre }}</option>
+        }
+      </select>
+    </div>
+    <div class="flex flex-col gap-1">
+      <label for="puntaje">Puntaje (0 a 999.99)</label>
+      <input
+        pInputText
+        type="number"
+        step="0.01"
+        min="0"
+        max="999.99"
+        id="puntaje"
+        name="puntaje"
+        [(ngModel)]="puntaje"
+      />
+    </div>
+    <div class="flex flex-col gap-1">
+      <label for="observaciones">Observaciones</label>
+      <input pInputText id="observaciones" name="observaciones" [(ngModel)]="observaciones" />
+    </div>
+    @if (errorForm()) {
+      <small class="text-red-500">{{ errorForm() }}</small>
+    }
+    <div class="flex justify-end gap-2">
+      <p-button type="button" label="Cancelar" severity="secondary" (onClick)="dialogoVisible.set(false)" />
+      <p-button type="submit" label="Guardar" [loading]="guardando()" />
+    </div>
+  </form>
+</p-dialog>
+
+<p-dialog
+  header="Eliminar evaluación"
+  [modal]="true"
+  [visible]="confirmarVisible()"
+  (visibleChange)="confirmarVisible.set($event)"
+  [style]="{ width: '26rem' }"
+>
+  <div class="flex flex-col gap-4">
+    <p>¿Seguro que quieres eliminar la evaluación <strong>{{ evaluacionAEliminar?.id }}</strong>?</p>
+    @if (errorEliminar()) {
+      <small class="text-red-500">{{ errorEliminar() }}</small>
+    }
+    <div class="flex justify-end gap-2">
+      <p-button label="Cancelar" severity="secondary" (onClick)="confirmarVisible.set(false)" />
+      <p-button label="Eliminar" severity="danger" [loading]="eliminando()" (onClick)="confirmarEliminar()" />
+    </div>
+  </div>
+</p-dialog>
