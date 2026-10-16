@@ -1,0 +1,135 @@
+<div class="p-4">
+  <div class="mb-4 flex items-center justify-between">
+    <h2 class="text-xl font-semibold">Convocatorias</h2>
+    @if (esAdmin()) {
+      <p-button label="Nueva" icon="pi pi-plus" (onClick)="nuevo()" />
+    }
+  </div>
+
+  @if (error()) {
+    <small class="text-red-500">{{ error() }}</small>
+  }
+
+  <p-table [value]="convocatorias()" [loading]="cargando()" [tableStyle]="{ 'min-width': '50rem' }">
+    <ng-template #header>
+      <tr>
+        <th>ID</th>
+        <th>Nombre</th>
+        <th>Tipo de beca</th>
+        <th>Estado</th>
+        <th>Apertura</th>
+        <th>Cierre</th>
+        <th>Cupos</th>
+        @if (esAdmin()) {
+          <th>Acciones</th>
+        }
+      </tr>
+    </ng-template>
+    <ng-template #body let-c>
+      <tr>
+        <td>{{ c.id }}</td>
+        <td>{{ c.nombre }}</td>
+        <td>{{ c.tipoBeca?.nombre ?? '—' }}</td>
+        <td>{{ c.estadoConvocatoria?.nombre ?? '—' }}</td>
+        <td>{{ soloFecha(c.fechaApertura) }}</td>
+        <td>{{ soloFecha(c.fechaCierre) }}</td>
+        <td>{{ c.cuposDisponibles }}</td>
+                @if (esAdmin()) {
+          <td>
+            <div class="flex gap-1">
+              <p-button icon="pi pi-pencil" [text]="true" [rounded]="true" (onClick)="editar(c)" />
+              <p-button
+                icon="pi pi-trash"
+                severity="danger"
+                [text]="true"
+                [rounded]="true"
+                (onClick)="pedirEliminar(c)"
+              />
+            </div>
+          </td>
+        }
+      </tr>
+    </ng-template>
+    <ng-template #emptymessage>
+      <tr>
+        <td colspan="8">No hay convocatorias registradas.</td>
+      </tr>
+    </ng-template>
+  </p-table>
+</div>
+
+<p-dialog
+  [header]="editandoId === null ? 'Nueva convocatoria' : 'Editar convocatoria'"
+  [modal]="true"
+  [visible]="dialogoVisible()"
+  (visibleChange)="dialogoVisible.set($event)"
+  [style]="{ width: '34rem' }"
+>
+  <form (ngSubmit)="guardar()" class="flex flex-col gap-4">
+    <div class="flex flex-col gap-1">
+      <label for="nombre">Nombre</label>
+      <input pInputText id="nombre" name="nombre" [(ngModel)]="nombre" maxlength="200" required />
+    </div>
+    <div class="flex flex-col gap-1">
+      <label for="descripcion">Descripción</label>
+      <input pInputText id="descripcion" name="descripcion" [(ngModel)]="descripcion" />
+    </div>
+    <div class="flex gap-4">
+      <div class="flex flex-1 flex-col gap-1">
+        <label for="apertura">Apertura</label>
+        <input pInputText type="date" id="apertura" name="apertura" [(ngModel)]="fechaApertura" />
+      </div>
+      <div class="flex flex-1 flex-col gap-1">
+        <label for="cierre">Cierre</label>
+        <input pInputText type="date" id="cierre" name="cierre" [(ngModel)]="fechaCierre" />
+      </div>
+    </div>
+    <div class="flex flex-col gap-1">
+      <label for="cupos">Cupos disponibles</label>
+      <input pInputText type="number" min="0" id="cupos" name="cupos" [(ngModel)]="cupos" />
+    </div>
+    <div class="flex flex-col gap-1">
+      <label for="tipoBeca">Tipo de beca</label>
+      <select id="tipoBeca" name="tipoBeca" [(ngModel)]="tipoBecaId" class="rounded-md border border-gray-300 p-2">
+        <option [ngValue]="null">Selecciona...</option>
+        @for (t of tipos(); track t.id) {
+          <option [ngValue]="t.id">{{ t.nombre }}</option>
+        }
+      </select>
+    </div>
+    <div class="flex flex-col gap-1">
+      <label for="estado">Estado</label>
+      <select id="estado" name="estado" [(ngModel)]="estadoId" class="rounded-md border border-gray-300 p-2">
+        <option [ngValue]="null">Selecciona...</option>
+        @for (e of estados(); track e.id) {
+          <option [ngValue]="e.id">{{ e.nombre }}</option>
+        }
+      </select>
+    </div>
+    @if (errorForm()) {
+      <small class="text-red-500">{{ errorForm() }}</small>
+    }
+    <div class="flex justify-end gap-2">
+      <p-button type="button" label="Cancelar" severity="secondary" (onClick)="dialogoVisible.set(false)" />
+      <p-button type="submit" label="Guardar" [loading]="guardando()" />
+    </div>
+  </form>
+</p-dialog>
+<p-dialog
+  header="Eliminar convocatoria"
+  [modal]="true"
+  [visible]="confirmarVisible()"
+  (visibleChange)="confirmarVisible.set($event)"
+  [style]="{ width: '26rem' }"
+>
+  <div class="flex flex-col gap-4">
+    <p>¿Seguro que quieres eliminar <strong>{{ convocatoriaAEliminar?.nombre }}</strong>?</p>
+    @if (errorEliminar()) {
+      <small class="text-red-500">{{ errorEliminar() }}</small>
+    }
+    <div class="flex justify-end gap-2">
+      <p-button label="Cancelar" severity="secondary" (onClick)="confirmarVisible.set(false)" />
+      <p-button label="Eliminar" severity="danger" [loading]="eliminando()" (onClick)="confirmarEliminar()" />
+    </div>
+  </div>
+</p-dialog>
