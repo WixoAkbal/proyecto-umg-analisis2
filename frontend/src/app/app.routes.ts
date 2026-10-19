@@ -39,6 +39,26 @@ export const routes: Routes = [
         loadComponent: () =>
           import('./pages/notificaciones/notificaciones').then((m) => m.Notificaciones),
       },
+      {
+        path: 'catalogos/niveles-academicos',
+        data: { titulo: 'Niveles académicos', endpoint: 'niveles-academicos' },
+        loadComponent: () => import('./pages/catalogo/catalogo').then((m) => m.Catalogo),
+      },
+      {
+        path: 'catalogos/tipos-documentos',
+        data: { titulo: 'Tipos de documentos', endpoint: 'tipos-documentos' },
+        loadComponent: () => import('./pages/catalogo/catalogo').then((m) => m.Catalogo),
+      },
+      {
+        path: 'catalogos/estados-convocatorias',
+        data: { titulo: 'Estados de convocatoria', endpoint: 'estados-convocatorias' },
+        loadComponent: () => import('./pages/catalogo/catalogo').then((m) => m.Catalogo),
+      },
+      {
+        path: 'catalogos/estados-solicitudes',
+        data: { titulo: 'Estados de solicitud', endpoint: 'estados-solicitudes' },
+        loadComponent: () => import('./pages/catalogo/catalogo').then((m) => m.Catalogo),
+      },
       { path: '', redirectTo: 'tipos-becas', pathMatch: 'full' },
     ],
   },

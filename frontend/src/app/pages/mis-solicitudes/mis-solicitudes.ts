@@ -6,10 +6,11 @@ import { DialogModule } from '@openng/optimus-ui/dialog';
 import { TableModule } from '@openng/optimus-ui/table';
 import { Solicitud, SolicitudesService } from '../solicitudes/solicitudes.service';
 import { Convocatoria, ConvocatoriasService } from '../convocatorias/convocatorias.service';
+import { DocumentosDialogo } from '../documentos/documentos-dialogo';
 
 @Component({
   selector: 'app-mis-solicitudes',
-  imports: [FormsModule, ButtonModule, DialogModule, TableModule],
+  imports: [FormsModule, ButtonModule, DialogModule, TableModule, DocumentosDialogo],
   templateUrl: './mis-solicitudes.html',
 })
 export class MisSolicitudes {
@@ -30,6 +31,9 @@ export class MisSolicitudes {
   cancelando = signal(false);
   errorCancelar = signal('');
   solicitudACancelar: Solicitud | null = null;
+
+  documentosVisible = signal(false);
+  solicitudDocumentos = signal<Solicitud | null>(null);
 
   constructor() {
     afterNextRender(() => {
@@ -66,6 +70,16 @@ export class MisSolicitudes {
 
   etiqueta(nombre: string | undefined): string {
     return nombre ? nombre.replace(/_/g, ' ') : '—';
+  }
+
+  verDocumentos(s: Solicitud): void {
+    this.solicitudDocumentos.set(s);
+    this.documentosVisible.set(true);
+  }
+
+  puedeModificarDocumentos(): boolean {
+    const s = this.solicitudDocumentos();
+    return s !== null && this.puedeCancelar(s);
   }
 
   abrirNueva(): void {

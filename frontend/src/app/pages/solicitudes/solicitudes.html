@@ -12,6 +12,7 @@
         <th>Estudiante</th>
         <th>Convocatoria</th>
         <th>Estado</th>
+        <th>Documentos</th>
       </tr>
     </ng-template>
     <ng-template #body let-s>
@@ -30,12 +31,21 @@
             }
           </select>
         </td>
+        <td>
+          <p-button label="Ver" icon="pi pi-paperclip" [text]="true" (onClick)="verDocumentos(s)" />
+        </td>
       </tr>
     </ng-template>
     <ng-template #emptymessage>
       <tr>
-        <td colspan="4">No hay solicitudes registradas.</td>
+        <td colspan="5">No hay solicitudes registradas.</td>
       </tr>
     </ng-template>
   </p-table>
 </div>
+
+<app-documentos-dialogo
+  [(visible)]="documentosVisible"
+  [solicitudId]="solicitudDocumentosId()"
+  [puedeModificar]="false"
+/>
