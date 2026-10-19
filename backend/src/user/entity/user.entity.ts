@@ -1,6 +1,7 @@
 import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
 import { AuditoriaOperativa } from '../../base/entities/auditoria-operativa.entity';
 import { UserRole } from '../../user-role/entity/user-role.entity';
+import { Exclude } from 'class-transformer';
 
 @Entity('usuarios')
 export class User extends AuditoriaOperativa {
@@ -16,8 +17,9 @@ export class User extends AuditoriaOperativa {
   @Column({ name: 'correo_electronico', length: 150, unique: true })
   correoElectronico: String;
 
+  @Exclude()
   @Column({ name: 'contrasenia', length: 250, nullable: false })
-  contrasenia: String;
+  contrasenia: string;
 
   @OneToMany(() => UserRole, (userRole) => userRole.usuario)
   roles: UserRole[];
