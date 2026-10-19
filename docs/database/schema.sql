@@ -46,7 +46,10 @@ create table usuarios (
 );
 
 insert into usuarios (nombre, apellido, correo_electronico, contrasenia, creado_por, estado_id) values
-('Admin', 'Admin', 'admin@email.com', 'admin123', 1, 1);
+('test', 'test', 'test@email.com', 'test123', 1, 1);
+
+insert into usuarios (nombre, apellido, correo_electronico, contrasenia, creado_por, estado_id) values
+('Admin', 'AS2', 'admin.ac2@email.com', 'admin123', 1, 1); -- $2b$12$I1bsj9D6ar5XZ9K6HEUAf.MV2s4D8GeHJndQxXIb4Z1cMC14GyjIy
 
 insert into usuarios (nombre, apellido, correo_electronico, contrasenia, creado_por, estado_id) values
 ('Usuario', '1', 'usuario1@email.com', 'usuario1', 1, 1);

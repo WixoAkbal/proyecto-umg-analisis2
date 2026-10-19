@@ -1,4 +1,4 @@
-import { ConflictException, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
+import { ConflictException, HttpStatus, Injectable, InternalServerErrorException, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { User } from './entity/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -6,6 +6,10 @@ import { UserDto } from './dto/user.dto';
 import { RolesService } from 'src/roles/roles.service';
 import { EstadosRegistroService } from 'src/estados-registro/estados-registro.service';
 import { UserRoleService } from 'src/user-role/user-role.service';
+import * as bcrypt from 'bcrypt';
+import { PasswordDto } from './dto/password.dto';
+import { ApiResponseDto } from 'src/common/dto/api-response.dto';
+import { UserPartialDto } from './dto/user-partial.dto';
 
 @Injectable()
 export class UserService {
@@ -18,7 +22,7 @@ export class UserService {
         private readonly _userRoleService: UserRoleService
        ) { }
 
-    async loadUserByUsername(username: string): Promise<User | undefined> {
+    async loadUserByUsername(username: String): Promise<User | undefined> {
         const user = await this._userRepository.findOne({
             where: { correoElectronico: username },
             relations: {
@@ -71,6 +75,8 @@ export class UserService {
     }
 
     async create(userDto: UserDto, subId: number) {
+        const bEncryptPasswordEncoder = 12;
+
         const user = await this._userRepository.findOne({
             where: { correoElectronico: userDto.correoElectronico }
         });
@@ -82,8 +88,14 @@ export class UserService {
         const role = await this._roleService.findOne(userDto.rolId);
         const status = await this._statusService.findOne(userDto.estadoId);
 
+        const hashedPassword = await bcrypt.hash(
+            userDto.contrasenia,
+            bEncryptPasswordEncoder,
+        );
+
         const newUser = this._userRepository.create({
             ...userDto,
+            contrasenia: hashedPassword,
             estado: status,
             creadoPor: subId
         });
@@ -92,15 +104,15 @@ export class UserService {
             const userCreated = await this._userRepository.save(newUser);
             await this._userRoleService.create(userCreated, role, status, subId);   
             
-            return userCreated;
+            return new ApiResponseDto(HttpStatus.OK, 'Se ha creado al usuario con éxito.');
         } catch (error) {
             throw new InternalServerErrorException('Ha ocurrido un error al intentar guardar al usuario.');
         }
     }
 
-    async update(id: number, userDto: UserDto, subId: number) {
+    async update(id: number, userDto: UserPartialDto, subId: number) {
         const user = await this.findById(id);
-        const userEmail = await this.findByEmail(userDto.correoElectronico);
+        const userEmail = await this.findByEmail(userDto.correoElectronico!!);
 
         if (userEmail && userEmail.id !== id) {
             throw new ConflictException('Ya existe un usuario registrado con el correo electrónico.');
@@ -129,7 +141,7 @@ export class UserService {
             await this._userRoleService.update(userUpdated.roles[0], role, subId);
         }
 
-        return userUpdated;
+        return new ApiResponseDto(HttpStatus.OK, 'Se ha modificado al usuario con éxito.');
     }
 
     async remove(id: number, subId: number) {
@@ -142,8 +154,36 @@ export class UserService {
             estadoAnterior: user.estado
         });
 
-        const userRemoved = await this._userRepository.save(user);
+        await this._userRepository.save(user);
 
-        return userRemoved;
+        return new ApiResponseDto(HttpStatus.OK, 'Se ha eliminado al usuario con éxito.');
+    }
+
+    async changePassword(id: number, passwordDto: PasswordDto, subId: number) {
+        const bEncryptPasswordEncoder = 12;
+        const user = await this.findById(id);
+
+        const validatePassword = await bcrypt.compare(
+            passwordDto.contraseniaActual,
+            user!!.contrasenia,
+        );
+
+        if (!validatePassword) {
+            throw new UnauthorizedException('Credenciales inválidas');
+        }
+        const hashedPassword = await bcrypt.hash(
+            passwordDto.contraseniaNueva,
+            bEncryptPasswordEncoder,
+        );
+        
+        Object.assign(user, {
+            contrasenia: hashedPassword,
+            modificadoPor: subId,
+            estadoAnterior: user.estado
+        });
+
+        await this._userRepository.save(user);
+
+        return new ApiResponseDto(HttpStatus.OK, 'Contraseña cambiada con éxito.');
     }
 }

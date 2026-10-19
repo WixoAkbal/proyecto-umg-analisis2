@@ -1,26 +1,91 @@
-<div class="flex min-h-screen items-center justify-center p-4">
-  <p-card header="Iniciar sesión" class="w-full max-w-sm">
-    <form (ngSubmit)="iniciarSesion()" class="flex flex-col gap-4">
-      <input
-        pInputText
-        name="username"
-        [(ngModel)]="username"
-        placeholder="Correo electrónico"
-        autocomplete="username"
-        required
-      />
-      <p-password
-        name="password"
-        [(ngModel)]="password"
-        placeholder="Contraseña"
-        [feedback]="false"
-        [toggleMask]="true"
-        [fluid]="true"
-      />
-      @if (error()) {
-        <small class="text-red-500">{{ error() }}</small>
-      }
-      <p-button type="submit" label="Entrar" [loading]="cargando()" />
-    </form>
-  </p-card>
+<div class="login-page">
+	<div class="login-container">
+
+		<div class="login-banner">
+			<div class="brand">
+				<div class="brand-icon">✦</div>
+				<span>Análisis de Sistemas 2</span>
+			</div>
+
+			<div class="banner-content">
+				<span class="welcome-badge">
+					✨ Tu futuro comienza con una oportunidad
+				</span>
+
+				<h1>
+					Tu talento merece<br />
+					<span>llegar más lejos.</span>
+				</h1>
+
+				<p>
+					Descubre oportunidades de becas, impulsa tu educación
+					y construye el futuro que siempre has imaginado.
+				</p>
+
+				<div class="learning-cards">
+					<div class="learning-card card-yellow">
+						<span class="learning-icon">📚</span>
+						<div>
+							<strong>Encuentra tu beca</strong>
+							<small>Nuevas oportunidades</small>
+						</div>
+					</div>
+
+					<div class="learning-card card-pink">
+						<span class="learning-icon">🚀</span>
+						<div>
+							<strong>Alcanza tus metas</strong>
+							<small>Tu futuro te espera</small>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div class="banner-decoration decoration-one"></div>
+			<div class="banner-decoration decoration-two"></div>
+
+			<div class="banner-footer">
+				<span>✦</span> Una oportunidad puede cambiar tu futuro.
+			</div>
+		</div>
+
+		<div class="login-form-section">
+			<p-card class="login-card">
+				<div class="form-heading">
+					<div class="form-icon">👋</div>
+					<h2>¡Bienvenido de nuevo!</h2>
+					<p>Inicia sesión para explorar tus becas y continuar tu camino hacia nuevas oportunidades.</p>
+				</div>
+
+				<form (ngSubmit)="iniciarSesion()" class="login-form">
+					<div class="field-group">
+						<label for="username">Correo electrónico</label>
+						<input pInputText id="username" name="username" [(ngModel)]="username"
+							placeholder="email@dominio.com" autocomplete="username" required class="login-input" />
+					</div>
+
+					<div class="field-group">
+						<label for="password">Contraseña</label>
+						<p-password inputId="password" name="password" [(ngModel)]="password"
+							placeholder="Ingresa tu contraseña" [feedback]="false" [toggleMask]="true" [fluid]="true"
+							autocomplete="current-password" required />
+					</div>
+
+					@if (error()) {
+					<small class="login-error">
+						{{ error() }}
+					</small>
+					}
+
+					<p-button type="submit" label="Ingresar a mi cuenta" [loading]="cargando()" [fluid]="true"
+						styleClass="login-submit" />
+
+					<p class="form-footer">
+						<span>💜</span> Tu próxima oportunidad comienza aquí.
+					</p>
+				</form>
+			</p-card>
+		</div>
+
+	</div>
 </div>

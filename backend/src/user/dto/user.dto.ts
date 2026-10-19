@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsNumber, IsString, MaxLength } from "class-validator";
+import { IsNotEmpty, IsNumber, IsOptional, IsString, MaxLength } from "class-validator";
 
 export class UserDto {
     @IsString()
@@ -19,6 +19,7 @@ export class UserDto {
     @IsString()
     @IsNotEmpty()
     @MaxLength(250)
+    @IsOptional()
     contrasenia: string;
 
     @IsNumber()
