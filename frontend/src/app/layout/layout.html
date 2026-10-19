@@ -1,5 +1,5 @@
 <div class="flex min-h-screen">
-  <aside class="flex w-56 shrink-0 flex-col justify-between border-r border-gray-200 p-4">
+  <aside class="flex w-64 shrink-0 flex-col justify-between border-r border-gray-200 p-4">
     <div>
       <h1 class="mb-6 text-lg font-semibold">Becas</h1>
       <nav class="flex flex-col gap-1">
@@ -49,6 +49,37 @@
         >
           Notificaciones
         </a>
+        @if (esAdmin()) {
+          <p class="mt-4 px-3 text-xs font-semibold uppercase text-gray-500">Catálogos</p>
+          <a
+            routerLink="/catalogos/niveles-academicos"
+            routerLinkActive="bg-gray-100 font-semibold"
+            class="rounded px-3 py-2 hover:bg-gray-100"
+          >
+            Niveles académicos
+          </a>
+          <a
+            routerLink="/catalogos/tipos-documentos"
+            routerLinkActive="bg-gray-100 font-semibold"
+            class="rounded px-3 py-2 hover:bg-gray-100"
+          >
+            Tipos de documentos
+          </a>
+          <a
+            routerLink="/catalogos/estados-convocatorias"
+            routerLinkActive="bg-gray-100 font-semibold"
+            class="rounded px-3 py-2 hover:bg-gray-100"
+          >
+            Estados de convocatoria
+          </a>
+          <a
+            routerLink="/catalogos/estados-solicitudes"
+            routerLinkActive="bg-gray-100 font-semibold"
+            class="rounded px-3 py-2 hover:bg-gray-100"
+          >
+            Estados de solicitud
+          </a>
+        }
       </nav>
     </div>
     <p-button

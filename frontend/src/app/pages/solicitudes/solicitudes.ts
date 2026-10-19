@@ -1,13 +1,15 @@
 import { Component, afterNextRender, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { HttpErrorResponse } from '@angular/common/http';
+import { ButtonModule } from '@openng/optimus-ui/button';
 import { TableModule } from '@openng/optimus-ui/table';
 import { Solicitud, SolicitudesService } from './solicitudes.service';
 import { EstadoSolicitud, EstadosSolicitudesService } from './estados-solicitudes.service';
+import { DocumentosDialogo } from '../documentos/documentos-dialogo';
 
 @Component({
   selector: 'app-solicitudes',
-  imports: [FormsModule, TableModule],
+  imports: [FormsModule, ButtonModule, TableModule, DocumentosDialogo],
   templateUrl: './solicitudes.html',
 })
 export class Solicitudes {
@@ -18,6 +20,9 @@ export class Solicitudes {
   estados = signal<EstadoSolicitud[]>([]);
   cargando = signal(false);
   error = signal('');
+
+  documentosVisible = signal(false);
+  solicitudDocumentosId = signal<number | null>(null);
 
   constructor() {
     afterNextRender(() => {
@@ -60,6 +65,11 @@ export class Solicitudes {
         this.cargar();
       },
     });
+  }
+
+  verDocumentos(solicitud: Solicitud): void {
+    this.solicitudDocumentosId.set(solicitud.id);
+    this.documentosVisible.set(true);
   }
 
   nombrePersona(solicitud: Solicitud): string {

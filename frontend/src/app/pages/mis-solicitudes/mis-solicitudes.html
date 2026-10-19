@@ -23,9 +23,12 @@
         <td>{{ s.convocatoria?.nombre ?? '—' }}</td>
         <td>{{ etiqueta(s.estadoSolicitud?.nombre) }}</td>
         <td>
-          @if (puedeCancelar(s)) {
-            <p-button label="Cancelar" severity="danger" [text]="true" (onClick)="pedirCancelar(s)" />
-          }
+          <div class="flex items-center gap-1">
+            <p-button label="Documentos" icon="pi pi-paperclip" [text]="true" (onClick)="verDocumentos(s)" />
+            @if (puedeCancelar(s)) {
+              <p-button label="Cancelar" severity="danger" [text]="true" (onClick)="pedirCancelar(s)" />
+            }
+          </div>
         </td>
       </tr>
     </ng-template>
@@ -93,3 +96,9 @@
     </div>
   </div>
 </p-dialog>
+
+<app-documentos-dialogo
+  [(visible)]="documentosVisible"
+  [solicitudId]="solicitudDocumentos()?.id ?? null"
+  [puedeModificar]="puedeModificarDocumentos()"
+/>

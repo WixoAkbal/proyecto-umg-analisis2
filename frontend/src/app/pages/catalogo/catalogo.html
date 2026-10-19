@@ -1,0 +1,96 @@
+<div class="p-4">
+  <div class="mb-4 flex items-center justify-between">
+    <h2 class="text-xl font-semibold">{{ titulo }}</h2>
+    @if (esAdmin()) {
+      <p-button label="Nuevo" icon="pi pi-plus" (onClick)="nuevo()" />
+    }
+  </div>
+
+  @if (error()) {
+    <small class="text-red-500">{{ error() }}</small>
+  }
+
+  <p-table [value]="items()" [loading]="cargando()" [tableStyle]="{ 'min-width': '30rem' }">
+    <ng-template #header>
+      <tr>
+        <th>ID</th>
+        <th>Nombre</th>
+        <th>Descripción</th>
+        @if (esAdmin()) {
+          <th>Acciones</th>
+        }
+      </tr>
+    </ng-template>
+    <ng-template #body let-item>
+      <tr>
+        <td>{{ item.id }}</td>
+        <td>{{ item.nombre }}</td>
+        <td>{{ item.descripcion }}</td>
+        @if (esAdmin()) {
+          <td>
+            <div class="flex gap-1">
+              <p-button icon="pi pi-pencil" [text]="true" [rounded]="true" (onClick)="editar(item)" />
+              <p-button
+                icon="pi pi-trash"
+                severity="danger"
+                [text]="true"
+                [rounded]="true"
+                (onClick)="pedirEliminar(item)"
+              />
+            </div>
+          </td>
+        }
+      </tr>
+    </ng-template>
+    <ng-template #emptymessage>
+      <tr>
+        <td colspan="4">No hay registros.</td>
+      </tr>
+    </ng-template>
+  </p-table>
+</div>
+
+<p-dialog
+  [header]="editandoId === null ? 'Nuevo registro' : 'Editar registro'"
+  [modal]="true"
+  [visible]="dialogoVisible()"
+  (visibleChange)="dialogoVisible.set($event)"
+  [style]="{ width: '28rem' }"
+>
+  <form (ngSubmit)="guardar()" class="flex flex-col gap-4">
+    <div class="flex flex-col gap-1">
+      <label for="nombre">Nombre</label>
+      <input pInputText id="nombre" name="nombre" [(ngModel)]="nombre" maxlength="100" required />
+    </div>
+    <div class="flex flex-col gap-1">
+      <label for="descripcion">Descripción</label>
+      <input pInputText id="descripcion" name="descripcion" [(ngModel)]="descripcion" maxlength="200" />
+    </div>
+    @if (errorForm()) {
+      <small class="text-red-500">{{ errorForm() }}</small>
+    }
+    <div class="flex justify-end gap-2">
+      <p-button type="button" label="Cancelar" severity="secondary" (onClick)="dialogoVisible.set(false)" />
+      <p-button type="submit" label="Guardar" [loading]="guardando()" />
+    </div>
+  </form>
+</p-dialog>
+
+<p-dialog
+  header="Eliminar registro"
+  [modal]="true"
+  [visible]="confirmarVisible()"
+  (visibleChange)="confirmarVisible.set($event)"
+  [style]="{ width: '26rem' }"
+>
+  <div class="flex flex-col gap-4">
+    <p>¿Seguro que quieres eliminar <strong>{{ itemAEliminar?.nombre }}</strong>?</p>
+    @if (errorEliminar()) {
+      <small class="text-red-500">{{ errorEliminar() }}</small>
+    }
+    <div class="flex justify-end gap-2">
+      <p-button label="Cancelar" severity="secondary" (onClick)="confirmarVisible.set(false)" />
+      <p-button label="Eliminar" severity="danger" [loading]="eliminando()" (onClick)="confirmarEliminar()" />
+    </div>
+  </div>
+</p-dialog>

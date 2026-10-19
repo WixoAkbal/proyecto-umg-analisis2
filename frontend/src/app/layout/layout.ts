@@ -14,11 +14,13 @@ export class Layout {
 
   veSolicitudes = signal(false);
   veMisSolicitudes = signal(false);
+  esAdmin = signal(false);
 
   constructor() {
     afterNextRender(() => {
       this.veSolicitudes.set(this.auth.tieneRol('ADMIN', 'EVALUADOR'));
       this.veMisSolicitudes.set(this.auth.tieneRol('ESTUDIANTE'));
+      this.esAdmin.set(this.auth.esAdmin());
     });
   }
 
