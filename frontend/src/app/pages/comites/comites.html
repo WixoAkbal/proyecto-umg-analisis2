@@ -1,0 +1,139 @@
+<div class="p-4">
+  <div class="mb-4 flex items-center justify-between">
+    <h2 class="text-xl font-semibold">Comités evaluadores</h2>
+    <p-button label="Nuevo" icon="pi pi-plus" (onClick)="nuevo()" />
+  </div>
+
+  @if (error()) {
+    <small class="text-red-500">{{ error() }}</small>
+  }
+
+  <p-table [value]="comites()" [loading]="cargando()" [tableStyle]="{ 'min-width': '40rem' }">
+    <ng-template #header>
+      <tr>
+        <th>ID</th>
+        <th>Nombre</th>
+        <th>Miembros</th>
+        <th>Acciones</th>
+      </tr>
+    </ng-template>
+    <ng-template #body let-c>
+      <tr>
+        <td>{{ c.id }}</td>
+        <td>{{ c.nombre }}</td>
+        <td>{{ nombresDe(c.id) }}</td>
+        <td>
+          <div class="flex items-center gap-1">
+            <p-button label="Miembros" icon="pi pi-users" [text]="true" (onClick)="abrirMiembros(c)" />
+            <p-button icon="pi pi-pencil" [text]="true" [rounded]="true" (onClick)="editar(c)" />
+            <p-button
+              icon="pi pi-trash"
+              severity="danger"
+              [text]="true"
+              [rounded]="true"
+              (onClick)="pedirEliminar(c)"
+            />
+          </div>
+        </td>
+      </tr>
+    </ng-template>
+    <ng-template #emptymessage>
+      <tr>
+        <td colspan="4">No hay comités registrados.</td>
+      </tr>
+    </ng-template>
+  </p-table>
+</div>
+
+<p-dialog
+  [header]="editandoId === null ? 'Nuevo comité' : 'Editar comité'"
+  [modal]="true"
+  [visible]="dialogoVisible()"
+  (visibleChange)="dialogoVisible.set($event)"
+  [style]="{ width: '28rem' }"
+>
+  <form (ngSubmit)="guardar()" class="flex flex-col gap-4">
+    <div class="flex flex-col gap-1">
+      <label for="nombre">Nombre</label>
+      <input pInputText id="nombre" name="nombre" [(ngModel)]="nombre" maxlength="150" required />
+    </div>
+    @if (errorForm()) {
+      <small class="text-red-500">{{ errorForm() }}</small>
+    }
+    <div class="flex justify-end gap-2">
+      <p-button type="button" label="Cancelar" severity="secondary" (onClick)="dialogoVisible.set(false)" />
+      <p-button type="submit" label="Guardar" [loading]="guardando()" />
+    </div>
+  </form>
+</p-dialog>
+
+<p-dialog
+  header="Eliminar comité"
+  [modal]="true"
+  [visible]="confirmarVisible()"
+  (visibleChange)="confirmarVisible.set($event)"
+  [style]="{ width: '26rem' }"
+>
+  <div class="flex flex-col gap-4">
+    <p>¿Seguro que quieres eliminar <strong>{{ comiteAEliminar?.nombre }}</strong>?</p>
+    @if (errorEliminar()) {
+      <small class="text-red-500">{{ errorEliminar() }}</small>
+    }
+    <div class="flex justify-end gap-2">
+      <p-button label="Cancelar" severity="secondary" (onClick)="confirmarVisible.set(false)" />
+      <p-button label="Eliminar" severity="danger" [loading]="eliminando()" (onClick)="confirmarEliminar()" />
+    </div>
+  </div>
+</p-dialog>
+
+<p-dialog
+  [header]="'Miembros de ' + (comiteSeleccionado()?.nombre ?? '')"
+  [modal]="true"
+  [visible]="miembrosVisible()"
+  (visibleChange)="miembrosVisible.set($event)"
+  [style]="{ width: '36rem' }"
+>
+  <div class="flex flex-col gap-4">
+    @if (miembrosDelComite().length === 0) {
+      <p>Este comité todavía no tiene evaluadores.</p>
+    } @else {
+      <ul class="flex flex-col gap-1">
+        @for (m of miembrosDelComite(); track m.evaluadorId) {
+          <li class="flex items-center justify-between border-b border-gray-200 py-1">
+            <span>
+              {{ m.evaluador?.nombre }} {{ m.evaluador?.apellido }}
+              <span class="text-sm text-gray-500">({{ m.evaluador?.correoElectronico }})</span>
+            </span>
+            <p-button icon="pi pi-times" severity="danger" [text]="true" [rounded]="true" (onClick)="quitarMiembro(m)" />
+          </li>
+        }
+      </ul>
+    }
+
+    <div class="flex flex-col gap-2 border-t border-gray-200 pt-4">
+      <label for="evaluador">Agregar evaluador</label>
+      @if (evaluadores().length === 0) {
+        <small class="text-red-500">No hay usuarios con rol EVALUADOR.</small>
+      } @else if (disponibles().length === 0) {
+        <small class="text-gray-500">Todos los evaluadores ya están en este comité.</small>
+      } @else {
+        <select id="evaluador" [(ngModel)]="evaluadorId" class="rounded-md border border-gray-300 p-2">
+          <option [ngValue]="null">Selecciona...</option>
+          @for (e of disponibles(); track e.id) {
+            <option [ngValue]="e.id">{{ e.nombre }} {{ e.apellido }} ({{ e.correoElectronico }})</option>
+          }
+        </select>
+        <div class="flex justify-end">
+          <p-button label="Agregar" icon="pi pi-plus" [loading]="trabajando()" (onClick)="agregarMiembro()" />
+        </div>
+      }
+    </div>
+
+    @if (errorMiembros()) {
+      <small class="text-red-500">{{ errorMiembros() }}</small>
+    }
+    <div class="flex justify-end">
+      <p-button label="Cerrar" severity="secondary" (onClick)="miembrosVisible.set(false)" />
+    </div>
+  </div>
+</p-dialog>

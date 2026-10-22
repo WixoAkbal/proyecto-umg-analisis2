@@ -1,0 +1,56 @@
+<div class="p-4">
+  <div class="mb-4 flex items-center justify-between">
+    <h2 class="text-xl font-semibold">Reportes</h2>
+    <p-button
+      label="Exportar CSV"
+      icon="pi pi-download"
+      [outlined]="true"
+      [disabled]="convocatorias().length === 0"
+      (onClick)="exportarCsv()"
+    />
+  </div>
+
+  @if (error()) {
+    <small class="text-red-500">{{ error() }}</small>
+  }
+
+  <div class="mb-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+    <div class="rounded-md border border-gray-200 p-4">
+      <p class="text-sm text-gray-500">Total de solicitudes</p>
+      <p class="text-2xl font-semibold">{{ resumen()?.total ?? 0 }}</p>
+    </div>
+    @for (e of estados(); track e.estadoId) {
+      <div class="rounded-md border border-gray-200 p-4">
+        <p class="text-sm text-gray-500">{{ etiqueta(e.estado) }}</p>
+        <p class="text-2xl font-semibold">{{ e.total }}</p>
+      </div>
+    }
+  </div>
+
+  <h3 class="mb-2 text-lg font-semibold">Solicitudes por convocatoria</h3>
+  <p-table [value]="convocatorias()" [loading]="cargando()" [tableStyle]="{ 'min-width': '30rem' }">
+    <ng-template #header>
+      <tr>
+        <th>Convocatoria</th>
+        @for (e of estados(); track e.estadoId) {
+          <th>{{ etiqueta(e.estado) }}</th>
+        }
+        <th>Total</th>
+      </tr>
+    </ng-template>
+    <ng-template #body let-c>
+      <tr>
+        <td>{{ c.convocatoria }}</td>
+        @for (e of estados(); track e.estadoId) {
+          <td>{{ cantidad(c, e.estadoId) }}</td>
+        }
+        <td class="font-semibold">{{ c.total }}</td>
+      </tr>
+    </ng-template>
+    <ng-template #emptymessage>
+      <tr>
+        <td [attr.colspan]="estados().length + 2">Todavía no hay solicitudes para reportar.</td>
+      </tr>
+    </ng-template>
+  </p-table>
+</div>

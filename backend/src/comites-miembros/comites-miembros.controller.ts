@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Param, Delete, Req } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Delete, Req, ParseIntPipe } from '@nestjs/common';
 import { ComitesMiembrosService } from './comites-miembros.service';
 import { CreateComitesMiembroDto } from './dto/create-comites-miembro.dto';
 import { Roles } from '../auth/auth.decorator';
@@ -15,24 +15,35 @@ export class ComitesMiembrosController {
     return this.comitesMiembrosService.create(createComitesMiembroDto, usuarioId);
   }
 
+  @Roles(Role.ADMIN)
+  @Get('evaluadores')
+  findEvaluadores() {
+    return this.comitesMiembrosService.findEvaluadores();
+  }
+
+  @Roles(Role.ADMIN, Role.EVALUADOR)
   @Get()
   findAll() {
     return this.comitesMiembrosService.findAll();
   }
 
+  @Roles(Role.ADMIN, Role.EVALUADOR)
   @Get(':comiteId/:evaluadorId')
-  findOne(@Param('comiteId') comiteId: string, @Param('evaluadorId') evaluadorId: string) {
-    return this.comitesMiembrosService.findOne(+comiteId, +evaluadorId);
+  findOne(
+    @Param('comiteId', ParseIntPipe) comiteId: number,
+    @Param('evaluadorId', ParseIntPipe) evaluadorId: number,
+  ) {
+    return this.comitesMiembrosService.findOne(comiteId, evaluadorId);
   }
 
   @Roles(Role.ADMIN)
   @Delete(':comiteId/:evaluadorId')
   remove(
-    @Param('comiteId') comiteId: string,
-    @Param('evaluadorId') evaluadorId: string,
+    @Param('comiteId', ParseIntPipe) comiteId: number,
+    @Param('evaluadorId', ParseIntPipe) evaluadorId: number,
     @Req() request: Request,
   ) {
     const usuarioId = (request as any).user.sub;
-    return this.comitesMiembrosService.remove(+comiteId, +evaluadorId, usuarioId);
+    return this.comitesMiembrosService.remove(comiteId, evaluadorId, usuarioId);
   }
 }

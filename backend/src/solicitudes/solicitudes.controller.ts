@@ -25,6 +25,11 @@ export class SolicitudesController {
     const usuarioId = (request as any).user.sub;
     return this.solicitudesService.findByUsuario(usuarioId);
   }
+  @Roles(Role.ADMIN, Role.EVALUADOR)
+  @Get('resumen')
+  resumen() {
+    return this.solicitudesService.resumen();
+  }
 
   @Roles(Role.ESTUDIANTE)
   @Post('propia')
@@ -45,7 +50,10 @@ export class SolicitudesController {
 
   @Roles(Role.ADMIN)
   @Post()
-  create(@Body() createSolicitudeDto: CreateSolicitudeDto, @Req() request: Request) {
+  create(
+    @Body() createSolicitudeDto: CreateSolicitudeDto,
+    @Req() request: Request,
+  ) {
     const usuarioId = (request as any).user.sub;
     return this.solicitudesService.create(createSolicitudeDto, usuarioId);
   }

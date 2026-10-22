@@ -171,6 +171,63 @@ export class SolicitudesService {
     return this.update(id, { estadoSolicitudId: ESTADO_CANCELADA }, usuarioId);
   }
 
+    async resumen() {
+    const solicitudes = await this.solicitudRepository.find({
+      where: { estado: { nombre: Not('eliminado') } },
+      relations: { convocatoria: true, estadoSolicitud: true, estado: true },
+      select: {
+        id: true,
+        convocatoria: { id: true, nombre: true },
+        estadoSolicitud: { id: true, nombre: true },
+        estado: { id: true },
+      },
+    });
+
+    const porEstado = new Map<
+      number,
+      { estadoId: number; estado: string; total: number }
+    >();
+    const porConvocatoria = new Map<
+      number,
+      {
+        convocatoriaId: number;
+        convocatoria: string;
+        total: number;
+        porEstado: Record<number, number>;
+      }
+    >();
+
+    for (const s of solicitudes) {
+      const estadoId = s.estadoSolicitud?.id;
+      const convocatoriaId = s.convocatoria?.id;
+      if (estadoId === undefined || convocatoriaId === undefined) continue;
+
+      const e = porEstado.get(estadoId) ?? {
+        estadoId,
+        estado: s.estadoSolicitud.nombre,
+        total: 0,
+      };
+      e.total += 1;
+      porEstado.set(estadoId, e);
+
+      const c = porConvocatoria.get(convocatoriaId) ?? {
+        convocatoriaId,
+        convocatoria: s.convocatoria.nombre,
+        total: 0,
+        porEstado: {} as Record<number, number>,
+      };
+      c.total += 1;
+      c.porEstado[estadoId] = (c.porEstado[estadoId] ?? 0) + 1;
+      porConvocatoria.set(convocatoriaId, c);
+    }
+
+    return {
+      total: solicitudes.length,
+      porEstado: [...porEstado.values()],
+      porConvocatoria: [...porConvocatoria.values()],
+    };
+  }
+
   async update(
     id: number,
     updateSolicitudeDto: UpdateSolicitudeDto,

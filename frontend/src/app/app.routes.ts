@@ -30,6 +30,14 @@ export const routes: Routes = [
           import('./pages/evaluaciones/evaluaciones').then((m) => m.Evaluaciones),
       },
       {
+        path: 'comites',
+        loadComponent: () => import('./pages/comites/comites').then((m) => m.Comites),
+      },
+      {
+        path: 'reportes',
+        loadComponent: () => import('./pages/reportes/reportes').then((m) => m.Reportes),
+      },
+      {
         path: 'mis-solicitudes',
         loadComponent: () =>
           import('./pages/mis-solicitudes/mis-solicitudes').then((m) => m.MisSolicitudes),
