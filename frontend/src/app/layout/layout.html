@@ -32,6 +32,13 @@
           >
             Evaluaciones
           </a>
+                    <a
+            routerLink="/reportes"
+            routerLinkActive="bg-gray-100 font-semibold"
+            class="rounded px-3 py-2 hover:bg-gray-100"
+          >
+            Reportes
+          </a>
         }
         @if (veMisSolicitudes()) {
           <a
@@ -50,6 +57,13 @@
           Notificaciones
         </a>
         @if (esAdmin()) {
+                    <a
+            routerLink="/comites"
+            routerLinkActive="bg-gray-100 font-semibold"
+            class="rounded px-3 py-2 hover:bg-gray-100"
+          >
+            Comités
+          </a>
           <p class="mt-4 px-3 text-xs font-semibold uppercase text-gray-500">Catálogos</p>
           <a
             routerLink="/catalogos/niveles-academicos"
