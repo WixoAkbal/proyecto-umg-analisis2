@@ -23,6 +23,7 @@ import { DocumentosModule } from './documentos/documentos.module';
 import { EvaluacionesModule } from './evaluaciones/evaluaciones.module';
 import { NotificacionesModule } from './notificaciones/notificaciones.module';
 import { HistorialEstadosModule } from './historial-estados/historial-estados.module';
+import { AutorizacionesModule } from './autorizaciones/autorizaciones.module';
 
 @Module({
   imports: [
@@ -63,7 +64,9 @@ import { HistorialEstadosModule } from './historial-estados/historial-estados.mo
     EvaluacionesModule,
     NotificacionesModule,
     HistorialEstadosModule,
+    AutorizacionesModule,
   ],
+  
   controllers: [AppController],
   providers: [AppService],
 })
