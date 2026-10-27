@@ -6,10 +6,11 @@ import { TableModule } from '@openng/optimus-ui/table';
 import { Solicitud, SolicitudesService } from './solicitudes.service';
 import { EstadoSolicitud, EstadosSolicitudesService } from './estados-solicitudes.service';
 import { DocumentosDialogo } from '../documentos/documentos-dialogo';
+import { HistorialDialogo } from '../historial/historial-dialogo';
 
 @Component({
   selector: 'app-solicitudes',
-  imports: [FormsModule, ButtonModule, TableModule, DocumentosDialogo],
+  imports: [FormsModule, ButtonModule, TableModule, DocumentosDialogo, HistorialDialogo],
   templateUrl: './solicitudes.html',
 })
 export class Solicitudes {
@@ -23,6 +24,8 @@ export class Solicitudes {
 
   documentosVisible = signal(false);
   solicitudDocumentosId = signal<number | null>(null);
+  historialVisible = signal(false);
+  solicitudHistorialId = signal<number | null>(null);
 
   constructor() {
     afterNextRender(() => {
@@ -70,6 +73,11 @@ export class Solicitudes {
   verDocumentos(solicitud: Solicitud): void {
     this.solicitudDocumentosId.set(solicitud.id);
     this.documentosVisible.set(true);
+  }
+
+  verHistorial(solicitud: Solicitud): void {
+    this.solicitudHistorialId.set(solicitud.id);
+    this.historialVisible.set(true);
   }
 
   nombrePersona(solicitud: Solicitud): string {

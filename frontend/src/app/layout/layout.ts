@@ -15,12 +15,23 @@ export class Layout {
   veSolicitudes = signal(false);
   veMisSolicitudes = signal(false);
   esAdmin = signal(false);
+  veAutorizaciones = signal(false);
+  soloAutorizador = signal(false);
 
-  constructor() {
+    constructor() {
     afterNextRender(() => {
       this.veSolicitudes.set(this.auth.tieneRol('ADMIN', 'EVALUADOR'));
       this.veMisSolicitudes.set(this.auth.tieneRol('ESTUDIANTE'));
       this.esAdmin.set(this.auth.esAdmin());
+      this.veAutorizaciones.set(this.auth.tieneRol('ADMIN', 'AUTORIZADOR'));
+
+      const solo =
+        this.auth.tieneRol('AUTORIZADOR') &&
+        !this.auth.tieneRol('ADMIN', 'EVALUADOR', 'ESTUDIANTE');
+      this.soloAutorizador.set(solo);
+      if (solo && ['/', '/tipos-becas'].includes(this.router.url)) {
+        this.router.navigate(['/autorizaciones']);
+      }
     });
   }
 

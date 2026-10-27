@@ -3,20 +3,22 @@
     <div>
       <h1 class="mb-6 text-lg font-semibold">Becas</h1>
       <nav class="flex flex-col gap-1">
-        <a
-          routerLink="/tipos-becas"
-          routerLinkActive="bg-gray-100 font-semibold"
-          class="rounded px-3 py-2 hover:bg-gray-100"
-        >
-          Tipos de becas
-        </a>
-        <a
-          routerLink="/convocatorias"
-          routerLinkActive="bg-gray-100 font-semibold"
-          class="rounded px-3 py-2 hover:bg-gray-100"
-        >
-          Convocatorias
-        </a>
+        @if (!soloAutorizador()) {
+          <a
+            routerLink="/tipos-becas"
+            routerLinkActive="bg-gray-100 font-semibold"
+            class="rounded px-3 py-2 hover:bg-gray-100"
+          >
+            Tipos de becas
+          </a>
+          <a
+            routerLink="/convocatorias"
+            routerLinkActive="bg-gray-100 font-semibold"
+            class="rounded px-3 py-2 hover:bg-gray-100"
+          >
+            Convocatorias
+          </a>
+        }
         @if (veSolicitudes()) {
           <a
             routerLink="/solicitudes"
@@ -32,7 +34,7 @@
           >
             Evaluaciones
           </a>
-                    <a
+          <a
             routerLink="/reportes"
             routerLinkActive="bg-gray-100 font-semibold"
             class="rounded px-3 py-2 hover:bg-gray-100"
@@ -49,6 +51,15 @@
             Mis solicitudes
           </a>
         }
+        @if (veAutorizaciones()) {
+          <a
+            routerLink="/autorizaciones"
+            routerLinkActive="bg-gray-100 font-semibold"
+            class="rounded px-3 py-2 hover:bg-gray-100"
+          >
+            Autorizaciones
+          </a>
+        }
         <a
           routerLink="/notificaciones"
           routerLinkActive="bg-gray-100 font-semibold"
@@ -57,7 +68,7 @@
           Notificaciones
         </a>
         @if (esAdmin()) {
-                    <a
+          <a
             routerLink="/comites"
             routerLinkActive="bg-gray-100 font-semibold"
             class="rounded px-3 py-2 hover:bg-gray-100"
