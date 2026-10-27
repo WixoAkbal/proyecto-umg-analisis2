@@ -49,6 +49,7 @@ export class HistorialEstadosService {
       relations: {
         estadoAnteriorSolicitud: true,
         estadoNuevoSolicitud: true,
+        usuario: true,
         estado: true,
       },
       order: { fechaHoraCreado: 'ASC' },

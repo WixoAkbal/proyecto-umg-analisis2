@@ -1,10 +1,11 @@
-import { Controller, Get, Post, Body, Param, Req } from '@nestjs/common';
+import { ClassSerializerInterceptor, Controller, Get, Post, Body, Param, Req, UseInterceptors } from '@nestjs/common';
 import { HistorialEstadosService } from './historial-estados.service';
 import { CreateHistorialEstadoDto } from './dto/create-historial-estado.dto';
 import { Roles } from '../auth/auth.decorator';
 import { Role } from '../auth/roles/role.enum';
 
 @Controller('historial-estados')
+@UseInterceptors(ClassSerializerInterceptor)
 export class HistorialEstadosController {
   constructor(private readonly historialEstadosService: HistorialEstadosService) {}
 
@@ -15,6 +16,7 @@ export class HistorialEstadosController {
     return this.historialEstadosService.create(createHistorialEstadoDto, usuarioId);
   }
 
+  @Roles(Role.ADMIN, Role.EVALUADOR)
   @Get('solicitud/:solicitudId')
   findBySolicitud(@Param('solicitudId') solicitudId: string) {
     return this.historialEstadosService.findBySolicitud(+solicitudId);
