@@ -111,6 +111,8 @@ fecha_hora_modificado datetime null on update current_timestamp,
 estado boolean not null default true
 );
 
+select * from niveles_academicos;
+
 create table estados_convocatorias (
 id int auto_increment primary key,
 nombre varchar(50) not null unique,

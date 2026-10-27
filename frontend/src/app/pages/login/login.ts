@@ -1,6 +1,6 @@
 import { Component, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
 import { ButtonModule } from '@openng/optimus-ui/button';
 import { CardModule } from '@openng/optimus-ui/card';
@@ -10,9 +10,15 @@ import { AuthService } from '../../core/auth.service';
 
 @Component({
 	selector: 'app-login',
-	imports: [FormsModule, ButtonModule, CardModule, InputTextModule, PasswordModule],
-	templateUrl: './login.html',
-	styleUrl: './login.css'
+	imports: [
+		FormsModule, 
+		ButtonModule, 
+		CardModule, 
+		InputTextModule, 
+		PasswordModule,
+		RouterLink
+	],
+	templateUrl: './login.html'
 })
 export class Login {
 	private readonly authService = inject(AuthService);
@@ -27,7 +33,7 @@ export class Login {
 		this.error.set('');
 		this.cargando.set(true);
 
-		this.authService.login(this.username, this.password).subscribe({
+		this.authService.login2(this.username, this.password).subscribe({
 			next: () => {
 				this.cargando.set(false);
 				this.router.navigate(['/tipos-becas']);
