@@ -1,5 +1,5 @@
 import { Body, ClassSerializerInterceptor, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post, Req, UseInterceptors } from "@nestjs/common";
-import { Roles } from "src/auth/auth.decorator";
+import { Public, Roles } from "src/auth/auth.decorator";
 import { Role } from "src/auth/roles/role.enum";
 import { UserService } from "./user.service";
 import { UserDto } from "./dto/user.dto";
@@ -24,7 +24,7 @@ export class UserController {
         return this._userService.findById(id);
     }
 
-    @Roles(Role.ADMIN, Role.ESTUDIANTE)
+    @Roles(Role.ADMIN)
     @Post()
     async create(@Body() userDto: UserDto, @Req() request: Request) {
         const subId = (request as any).user.sub;
@@ -50,5 +50,11 @@ export class UserController {
     async changePassword(@Param('id') id: number, @Body() passwordDto: PasswordDto, @Req() request: Request) {
         const subId = (request as any).user.sub;
         return this._userService.changePassword(id, passwordDto, subId);
+    }
+
+    @Public()
+    @Post('register')
+    async register(@Body() userDto: UserDto) {
+        return this._userService.create(userDto, 1);
     }
 }

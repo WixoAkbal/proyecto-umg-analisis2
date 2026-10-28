@@ -77,11 +77,15 @@
 					</small>
 					}
 
-					<p-button type="submit" label="Ingresar a mi cuenta" [loading]="cargando()" [fluid]="true"
-						styleClass="login-submit" />
+					<p-button type="submit" label="Ingresar a mi cuenta" [loading]="cargando()" [fluid]="true" styleClass="login-submit" />
 
 					<p class="form-footer">
 						<span>💜</span> Tu próxima oportunidad comienza aquí.
+						<br />
+						¿Aún no tienes cuenta?
+						<a routerLink="/registro" class="register-link">
+							Regístrate aquí
+						</a>
 					</p>
 				</form>
 			</p-card>

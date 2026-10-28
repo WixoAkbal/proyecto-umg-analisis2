@@ -1,0 +1,135 @@
+<div class="login-page">
+    <div class="login-container">
+
+        <!-- Panel izquierdo -->
+        <div class="login-banner">
+            <div class="brand">
+                <div class="brand-icon">✦</div>
+                <span>Análisis de Sistemas 2</span>
+            </div>
+
+            <div class="banner-content">
+                <span class="welcome-badge">
+                    ✨ Tu futuro comienza con una oportunidad
+                </span>
+
+                <h1>
+                    Da el primer paso<br />
+                    <span>hacia tu futuro.</span>
+                </h1>
+
+                <p>
+                    Crea tu cuenta, descubre oportunidades de becas
+                    e impulsa tu educación hacia nuevas metas.
+                </p>
+
+                <div class="learning-cards">
+                    <div class="learning-card card-yellow">
+                        <span class="learning-icon">📚</span>
+                        <div>
+                            <strong>Explora oportunidades</strong>
+                            <small>Encuentra tu próxima beca</small>
+                        </div>
+                    </div>
+
+                    <div class="learning-card card-pink">
+                        <span class="learning-icon">🚀</span>
+                        <div>
+                            <strong>Construye tu futuro</strong>
+                            <small>Empieza hoy tu camino</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="banner-decoration decoration-one"></div>
+            <div class="banner-decoration decoration-two"></div>
+
+            <div class="banner-footer">
+                <span>✦</span> Una oportunidad puede cambiar tu futuro.
+            </div>
+        </div>
+
+        <!-- Formulario de registro -->
+        <div class="login-form-section">
+            <p-card class="login-card register-card">
+
+                <div class="form-heading">
+                    <div class="form-icon">📝</div>
+                    <h2>Crear mi cuenta</h2>
+                    <p>
+                        Regístrate para explorar becas y descubrir
+                        nuevas oportunidades para tu futuro.
+                    </p>
+                </div>
+
+                <form #formularioRegistroNgForm="ngForm" [formGroup]="formularioRegistro" (ngSubmit)="registrar()" class="login-form register-form" novalidate>
+                    <div class="register-name-row">
+                        <div class="field-group">
+                            <label for="nombre">Nombre</label>
+                            <input id="nombre" [formControlName]="'nombre'" placeholder="Tu nombre" class="login-input" required pInputText />
+                            @if (formularioRegistro.get('nombre')?.invalid && formularioRegistro.get('nombre')?.touched) {
+                                <small class="login-error">El nombre es obligatorio.</small>
+                            }
+                        </div>
+
+                        <div class="field-group">
+                            <label for="apellido">Apellido</label>
+                            <input id="apellido" [formControlName]="'apellido'" placeholder="Tu apellido" class="login-input" required pInputText />
+                            @if (formularioRegistro.get('apellido')?.invalid && formularioRegistro.get('apellido')?.touched) {
+                                <small class="login-error">El apellido es obligatorio.</small>
+                            }
+                        </div>
+                    </div>
+
+                    <div class="field-group">
+                        <label for="correo">Correo electrónico</label>
+                        <input id="correo" type="email" [formControlName]="'correo'" placeholder="email@dominio.com" required email pInputText class="login-input"/>
+                        @if (formularioRegistro.get('correo')?.invalid && formularioRegistro.get('correo')?.touched) {
+                            <small class="login-error">El Correo electrónico es obligatorio.</small>
+                        }
+                    </div>
+
+                    <div class="field-group">
+                        <label for="contrasena">Contraseña</label>
+                        <p-password inputId="contrasena" [formControlName]="'contrasenia'" placeholder="Crea una contraseña" [feedback]="false" [toggleMask]="true" [fluid]="true" required />
+                        @if (formularioRegistro.get('contrasenia')?.invalid && formularioRegistro.get('contrasenia')?.touched) {
+                            <small class="login-error">La Contraseña es obligatoria.</small>
+                        }
+                    </div>
+
+                    <div class="field-group">
+                        <label for="confirmarContrasena">Confirmar contraseña</label>
+                        <p-password inputId="confirmarContrasena" [formControlName]="'confirmarContrasenia'"  placeholder="Repite tu contraseña" [feedback]="false" [toggleMask]="true" [fluid]="true" required />
+                        @if (formularioRegistro.get('confirmarContrasenia')?.invalid && formularioRegistro.get('confirmarContrasenia')?.touched) {
+                            <small class="login-error">La Contraseña es obligatoria.</small>
+                        }
+                    </div>
+
+                    @if (mensajeExito) {
+                    <div class="registro-exito" role="status">
+                        {{ mensajeExito }}
+                    </div>
+                    }
+
+                    @if (mensajeError) {
+                    <div class="registro-error" role="alert">
+                        {{ mensajeError }}
+                    </div>
+}
+
+                    <p-button type="submit" label="Crear mi cuenta" [loading]="cargando" [fluid]="true" styleClass="login-submit" [disabled]="formularioRegistro.invalid" />
+
+                    <p class="form-footer">
+                        ¿Ya tienes una cuenta?
+                        <a routerLink="/login" class="register-link">
+                            Inicia sesión
+                        </a>
+                    </p>
+
+                </form>
+            </p-card>
+        </div>
+
+    </div>
+</div>
