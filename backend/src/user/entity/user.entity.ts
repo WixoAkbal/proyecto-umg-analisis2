@@ -9,10 +9,10 @@ export class User extends AuditoriaOperativa {
   id: number;
 
   @Column({ name: 'nombre', length: 100, nullable: false })
-  nombre: String;
+  nombre: string;
 
   @Column({ name: 'apellido', length: 100, nullable: false })
-  apellido: String;
+  apellido: string;
 
   @Column({ name: 'correo_electronico', length: 150, unique: true })
   correoElectronico: String;

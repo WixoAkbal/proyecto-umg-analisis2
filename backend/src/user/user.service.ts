@@ -1,15 +1,18 @@
 import { ConflictException, HttpStatus, Injectable, InternalServerErrorException, NotFoundException, UnauthorizedException } from '@nestjs/common';
-import { User } from './entity/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { UserDto } from './dto/user.dto';
-import { RolesService } from 'src/roles/roles.service';
-import { EstadosRegistroService } from 'src/estados-registro/estados-registro.service';
-import { UserRoleService } from 'src/user-role/user-role.service';
 import * as bcrypt from 'bcrypt';
-import { PasswordDto } from './dto/password.dto';
 import { ApiResponseDto } from 'src/common/dto/api-response.dto';
+import { EstadosRegistroService } from 'src/estados-registro/estados-registro.service';
+import { CreatePersonaDto } from 'src/personas/dto/create-persona.dto';
+import { PersonasService } from 'src/personas/personas.service';
+import { RolesService } from 'src/roles/roles.service';
+import { UserRoleService } from 'src/user-role/user-role.service';
+import { Repository } from 'typeorm';
+import { PasswordDto } from './dto/password.dto';
 import { UserPartialDto } from './dto/user-partial.dto';
+import { UserRegisterDto } from './dto/user-register.dto';
+import { UserDto } from './dto/user.dto';
+import { User } from './entity/user.entity';
 
 @Injectable()
 export class UserService {
@@ -19,7 +22,8 @@ export class UserService {
         private readonly _userRepository: Repository<User>,
         private readonly _roleService: RolesService,
         private readonly _statusService: EstadosRegistroService,
-        private readonly _userRoleService: UserRoleService
+        private readonly _userRoleService: UserRoleService,
+        private readonly _personaService: PersonasService
        ) { }
 
     async loadUserByUsername(username: String): Promise<User | undefined> {
@@ -185,5 +189,55 @@ export class UserService {
         await this._userRepository.save(user);
 
         return new ApiResponseDto(HttpStatus.OK, 'Contraseña cambiada con éxito.');
+    }
+
+    async userRegister(userRegisterDto: UserRegisterDto, subId: number) {
+        const bEncryptPasswordEncoder = 12;
+
+        const user = await this._userRepository.findOne({
+            where: { correoElectronico: userRegisterDto.correoElectronico }
+        });
+
+        if (user) {
+            throw new ConflictException('Ya existe un usuario registrado con el correo electrónico.');
+        }
+
+        const role = await this._roleService.findOne(userRegisterDto.rolId);
+        const status = await this._statusService.findOne(userRegisterDto.estadoId);
+
+        const hashedPassword = await bcrypt.hash(
+            userRegisterDto.contrasenia,
+            bEncryptPasswordEncoder,
+        );
+
+        const newUser = this._userRepository.create({
+            ...userRegisterDto,
+            contrasenia: hashedPassword,
+            estado: status,
+            creadoPor: subId
+        });
+        
+        try {
+            const userCreated = await this._userRepository.save(newUser);
+            await this._userRoleService.create(userCreated, role, status, subId);   
+
+            if (userCreated !== null) {
+                let nuevaPersona = new CreatePersonaDto();
+                nuevaPersona.primerNombre = userRegisterDto.nombre;
+                nuevaPersona.primerApellido = userRegisterDto.apellido;
+                nuevaPersona.dpi = "0";
+                nuevaPersona.nivelAcademicoId = userRegisterDto.nivelAcademico;
+                nuevaPersona.institucionEducativa = userRegisterDto.institucionEducativa;
+                nuevaPersona.genero = userRegisterDto.genero;
+                nuevaPersona.fechaNacimiento = userRegisterDto.fechaNacimiento;
+                nuevaPersona.usuarioId = userCreated.id;
+        
+                await this._personaService.create(nuevaPersona, subId);
+            }
+            
+            return new ApiResponseDto(HttpStatus.OK, 'Se ha creado al usuario con éxito.');
+        } catch (error) {
+            throw new InternalServerErrorException('Ha ocurrido un error al intentar guardar al usuario.' + error);
+        }
     }
 }

@@ -24,6 +24,7 @@ import { EvaluacionesModule } from './evaluaciones/evaluaciones.module';
 import { NotificacionesModule } from './notificaciones/notificaciones.module';
 import { HistorialEstadosModule } from './historial-estados/historial-estados.module';
 import { AutorizacionesModule } from './autorizaciones/autorizaciones.module';
+import { DropdownModule } from './dropdown/dropdown.module';
 
 @Module({
   imports: [
@@ -65,6 +66,7 @@ import { AutorizacionesModule } from './autorizaciones/autorizaciones.module';
     NotificacionesModule,
     HistorialEstadosModule,
     AutorizacionesModule,
+    DropdownModule
   ],
   
   controllers: [AppController],

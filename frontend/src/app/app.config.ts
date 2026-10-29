@@ -7,6 +7,7 @@ import { routes } from './app.routes';
 import { provideClientHydration, withEventReplay } from '@angular/platform-browser';
 import { provideOptimus } from '@openng/optimus-ui/config';
 import Aura from '@openng/optimus-ui-themes/aura';
+import { all } from '@openng/optimus-ui-locale';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -15,11 +16,12 @@ export const appConfig: ApplicationConfig = {
     provideHttpClient(withFetch(), withInterceptors([authInterceptor])),
     provideClientHydration(withEventReplay()),
     provideOptimus({
+      translation: all.es,
       theme: {
         preset: Aura,
         options: {
           prefix: 'p',
-          darkModeSelector: 'white',
+          darkModeSelector: 'white'
         }
       }
     }),

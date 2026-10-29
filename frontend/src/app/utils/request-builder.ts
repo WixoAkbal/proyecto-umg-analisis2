@@ -40,40 +40,98 @@ export class RequestBuilder {
         else return this._header;
     }
 
-    async makeGetRequest(URL: string, params: UrlParams): Promise<Response> {
+    async makeGetRequest(URL: string, params: UrlParams | null): Promise<Response> {
         const headers = await this.getHeaders(true);
+        
         return new Promise((resolve) => {
-            this._httpClient.get<any>(URL, {headers, params, responseType: this._responseType})
+            this._httpClient.get<any>(URL, {headers, params: params ?? {}, responseType: this._responseType})
                 .subscribe({
                     next: (response: Response) => {
-                        resolve({ message: response.message, statusCode: response.statusCode });
+                        if (response.message != null)  this.showSweetAlert('success', response.message);
+                        resolve({ status: true, message: response.message, statusCode: response.statusCode, result: response })
                     },
-                    error: (request: HttpErrorResponse) => {
-                        const { error, status } = request;
-                        resolve({ message: error.message, statusCode: error.statusCode});
+                    error: (error: HttpErrorResponse) => {
+                        this.showSweetAlert('error', error.error.message);
+                        resolve({ status: false, message: error.error.message, statusCode: error.error.statusCode, result: error })
                     }
                 });
         })
     }
 
-    async makePostRequest(URL: string, body: object, params: UrlParams): Promise<Response> {
+    async makePostRequest(URL: string, body: object, params: UrlParams | null): Promise<Response> {
         const headers = await this.getHeaders(true);
 
         return new Promise((resolve) => {
-            this._httpClient.post<any>(URL, body, { headers, params, responseType: this._responseType })
+            this._httpClient.post<any>(URL, body, { headers, params: params ?? {}, responseType: this._responseType })
                 .subscribe({
                     next: (response: Response) => {
-                        console.log(response);
+                        if (response.message != null)  this.showSweetAlert('success', response.message);
+                        resolve({ status: true, message: response.message, statusCode: response.statusCode, result: response })
                     },
                     error: (error: HttpErrorResponse) => {
-                        console.log(error);
+                        this.showSweetAlert('error', error.error.message);
+                        resolve({ status: false, message: error.error.message, statusCode: error.error.statusCode, result: error })
+                    }
+                });
+        });
+    }
+
+    async makePatchRequest(URL: string, body: object, params: UrlParams | null): Promise<Response> {
+        const headers = await this.getHeaders(true);
+
+        return new Promise((resolve) => {
+            this._httpClient.patch<any>(URL, body, { headers, params: params ?? {}, responseType: this._responseType })
+                .subscribe({
+                    next: (response: Response) => {
+                        if (response.message != null)  this.showSweetAlert('success', response.message);
+                        resolve({ status: true, message: response.message, statusCode: response.statusCode, result: response })
+                    },
+                    error: (error: HttpErrorResponse) => {
+                        this.showSweetAlert('error', error.error.message);
+                        resolve({ status: false, message: error.error.message, statusCode: error.error.statusCode, result: error })
+                    }
+                });
+        });
+    }
+
+    async makePutRequest(URL: string, body: object, params: UrlParams | null): Promise<Response> {
+        const headers = await this.getHeaders(true);
+
+        return new Promise((resolve) => {
+            this._httpClient.put<any>(URL, body, { headers, params: params ?? {}, responseType: this._responseType })
+                .subscribe({
+                    next: (response: Response) => {
+                        if (response.message != null)  this.showSweetAlert('success', response.message);
+                        resolve({ status: true, message: response.message, statusCode: response.statusCode, result: response })
+                    },
+                    error: (error: HttpErrorResponse) => {
+                        this.showSweetAlert('error', error.error.message);
+                        resolve({ status: false, message: error.error.message, statusCode: error.error.statusCode, result: error })
+                    }
+                });
+        });
+    }
+
+    async makeDeleteRequest(URL: string, params: UrlParams | null): Promise<Response> {
+        const headers = await this.getHeaders(true);
+
+        return new Promise((resolve) => {
+            this._httpClient.delete<any>(URL, { headers, params: params ?? {}, responseType: this._responseType })
+                .subscribe({
+                    next: (response: Response) => {
+                        if (response.message != null)  this.showSweetAlert('success', response.message);
+                        resolve({ status: true, message: response.message, statusCode: response.statusCode, result: response })
+                    },
+                    error: (error: HttpErrorResponse) => {
+                        this.showSweetAlert('error', error.error.message);
+                        resolve({ status: false, message: error.error.message, statusCode: error.error.statusCode, result: error })
                     }
                 });
         });
     }
 
     async makePostRequestWithoutHeader(URL: string, body: object): Promise<Response> {
-        return new Promise((resolve) => {
+        return new Promise(() => {
             this._httpClient.post<any>(URL, body, { responseType: this._responseType })
                 .subscribe({
                     next: (response: Response) => {
@@ -97,5 +155,4 @@ export class RequestBuilder {
             allowOutsideClick: false,
         });
     }
-
 }

@@ -13,5 +13,6 @@ import { EstadoRegistro } from '../estados-registro/entities/estados-registro.en
   ],
   controllers: [PersonasController],
   providers: [PersonasService],
+  exports: [PersonasService]
 })
 export class PersonasModule {}

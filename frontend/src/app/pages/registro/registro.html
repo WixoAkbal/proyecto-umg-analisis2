@@ -91,8 +91,8 @@
                     </div>
 
                     <div class="field-group">
-                        <label for="contrasena">Contraseña</label>
-                        <p-password inputId="contrasena" [formControlName]="'contrasenia'" placeholder="Crea una contraseña" [feedback]="false" [toggleMask]="true" [fluid]="true" required />
+                        <label for="contrasenia">Contraseña</label>
+                        <p-password inputId="contrasenia" [formControlName]="'contrasenia'" placeholder="Crea una contraseña" [feedback]="false" [toggleMask]="true" [fluid]="true" required />
                         @if (formularioRegistro.get('contrasenia')?.invalid && formularioRegistro.get('contrasenia')?.touched) {
                             <small class="login-error">La Contraseña es obligatoria.</small>
                         }
@@ -100,9 +100,41 @@
 
                     <div class="field-group">
                         <label for="confirmarContrasena">Confirmar contraseña</label>
-                        <p-password inputId="confirmarContrasena" [formControlName]="'confirmarContrasenia'"  placeholder="Repite tu contraseña" [feedback]="false" [toggleMask]="true" [fluid]="true" required />
+                        <p-password inputId="confirmarContrasena" [formControlName]="'confirmarContrasenia'" placeholder="Repite tu contraseña" [feedback]="false" [toggleMask]="true" [fluid]="true" required />
                         @if (formularioRegistro.get('confirmarContrasenia')?.invalid && formularioRegistro.get('confirmarContrasenia')?.touched) {
                             <small class="login-error">La Contraseña es obligatoria.</small>
+                        }
+                    </div>
+
+                    <div class="field-group">
+                        <label for="nivelAcademico">Nivel Académico</label>
+                        <p-select inputId="nivelAcademico" formControlName="nivelAcademico" [options]="ddNivelAcademico" optionLabel="description" optionValue="value" placeholder="Seleccione el nivel" [showClear]="true" />
+                        @if (formularioRegistro.get('nivelAcademico')?.invalid && formularioRegistro.get('nivelAcademico')?.touched) {
+                            <small class="login-error">El Nivel Académico es obligatorio.</small>
+                        }
+                    </div>
+
+                    <div class="field-group">
+                        <label for="institucionEducativa">Institución Educativa</label>
+                        <input id="institucionEducativa" [formControlName]="'institucionEducativa'" placeholder="Institución Educativa" class="login-input" required pInputText />
+                        @if (formularioRegistro.get('institucionEducativa')?.invalid && formularioRegistro.get('institucionEducativa')?.touched) {
+                            <small class="login-error">La institución educativa es obligatoria.</small>
+                        }
+                    </div>
+
+                    <div class="field-group">
+                        <label for="genero">Género</label>
+                        <p-select inputId="genero" formControlName="genero" [options]="ddGenero" optionLabel="description" optionValue="value" placeholder="Seleccione el género" [showClear]="true" />
+                        @if (formularioRegistro.get('genero')?.invalid && formularioRegistro.get('genero')?.touched) {
+                            <small class="login-error">El género es obligatorio.</small>
+                        }
+                    </div>
+
+                    <div class="field-group">
+                        <label for="fechaNacimiento">Fecha de Nacimiento</label>
+                        <p-datepicker ngSkipHydration formControlName="fechaNacimiento" dateFormat="dd/mm/yy" placeholder="dd/mm/yyyy" [showIcon]="true" [maxDate]="fechaMaxima" appendTo="self" />
+                        @if (formularioRegistro.get('fechaNacimiento')?.invalid && formularioRegistro.get('fechaNacimiento')?.touched) {
+                            <small class="login-error">La fecha de nacimiento es obligatoria.</small>
                         }
                     </div>
 

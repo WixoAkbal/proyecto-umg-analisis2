@@ -5,4 +5,8 @@ export class NewUserRequest {
     contrasenia: string;
     rolId: number;
     estadoId: number;
+    nivelAcademico: number;
+    institucionEducativa: string;
+    genero: string;
+    fechaNacimiento: string;
 }

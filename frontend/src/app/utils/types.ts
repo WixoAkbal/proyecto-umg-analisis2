@@ -1,7 +1,9 @@
 type Response = {
-    message: string,
-    error?: string,  
-    statusCode: number
+    status: boolean,
+    message: string, 
+    statusCode: number,
+    result: any,
+    error?: string
 }
 
 export type {

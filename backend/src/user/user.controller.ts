@@ -5,6 +5,7 @@ import { UserService } from "./user.service";
 import { UserDto } from "./dto/user.dto";
 import { PasswordDto } from "./dto/password.dto";
 import { UserPartialDto } from "./dto/user-partial.dto";
+import { UserRegisterDto } from "./dto/user-register.dto";
 
 @Controller('user')
 @UseInterceptors(ClassSerializerInterceptor)
@@ -54,7 +55,7 @@ export class UserController {
 
     @Public()
     @Post('register')
-    async register(@Body() userDto: UserDto) {
-        return this._userService.create(userDto, 1);
+    async register(@Body() userRegisterDto: UserRegisterDto) {
+        return this._userService.userRegister(userRegisterDto, 1);
     }
 }
