@@ -20,9 +20,7 @@
         <th>Apertura</th>
         <th>Cierre</th>
         <th>Cupos</th>
-        @if (esAdmin()) {
-          <th>Acciones</th>
-        }
+        <th>Acciones</th>
       </tr>
     </ng-template>
     <ng-template #body let-c>
@@ -34,9 +32,13 @@
         <td>{{ soloFecha(c.fechaApertura) }}</td>
         <td>{{ soloFecha(c.fechaCierre) }}</td>
         <td>{{ c.cuposDisponibles }}</td>
-                @if (esAdmin()) {
-          <td>
-            <div class="flex gap-1">
+        <td>
+          <div class="flex items-center gap-1">
+            <p-button label="Detalle" icon="pi pi-eye" [text]="true" (onClick)="verDetalle(c)" />
+            @if (esEstudiante() && estaActiva(c)) {
+              <p-button label="Aplicar" icon="pi pi-send" [text]="true" (onClick)="pedirAplicar(c)" />
+            }
+            @if (esAdmin()) {
               <p-button icon="pi pi-pencil" [text]="true" [rounded]="true" (onClick)="editar(c)" />
               <p-button
                 icon="pi pi-trash"
@@ -45,9 +47,9 @@
                 [rounded]="true"
                 (onClick)="pedirEliminar(c)"
               />
-            </div>
-          </td>
-        }
+            }
+          </div>
+        </td>
       </tr>
     </ng-template>
     <ng-template #emptymessage>
@@ -115,6 +117,7 @@
     </div>
   </form>
 </p-dialog>
+
 <p-dialog
   header="Eliminar convocatoria"
   [modal]="true"
@@ -130,6 +133,65 @@
     <div class="flex justify-end gap-2">
       <p-button label="Cancelar" severity="secondary" (onClick)="confirmarVisible.set(false)" />
       <p-button label="Eliminar" severity="danger" [loading]="eliminando()" (onClick)="confirmarEliminar()" />
+    </div>
+  </div>
+</p-dialog>
+
+<p-dialog
+  header="Detalle de la convocatoria"
+  [modal]="true"
+  [visible]="detalleVisible()"
+  (visibleChange)="detalleVisible.set($event)"
+  [style]="{ width: '30rem' }"
+>
+  @if (detalle(); as d) {
+    <div class="flex flex-col gap-3">
+      <h3 class="text-lg font-semibold">{{ d.nombre }}</h3>
+      <p class="text-gray-600">{{ d.descripcion || 'Sin descripción.' }}</p>
+      <dl class="grid grid-cols-2 gap-2">
+        <dt class="font-semibold">Tipo de beca</dt>
+        <dd>{{ d.tipoBeca?.nombre ?? '-' }}</dd>
+        <dt class="font-semibold">Estado</dt>
+        <dd>{{ d.estadoConvocatoria?.nombre ?? '-' }}</dd>
+        <dt class="font-semibold">Apertura</dt>
+        <dd>{{ soloFecha(d.fechaApertura) }}</dd>
+        <dt class="font-semibold">Cierre</dt>
+        <dd>{{ soloFecha(d.fechaCierre) }}</dd>
+        <dt class="font-semibold">Cupos disponibles</dt>
+        <dd>{{ d.cuposDisponibles }}</dd>
+      </dl>
+      <div class="flex justify-end gap-2">
+        @if (esEstudiante() && estaActiva(d)) {
+          <p-button
+            label="Aplicar"
+            icon="pi pi-send"
+            (onClick)="detalleVisible.set(false); pedirAplicar(d)"
+          />
+        }
+        <p-button label="Cerrar" severity="secondary" (onClick)="detalleVisible.set(false)" />
+      </div>
+    </div>
+  }
+</p-dialog>
+
+<p-dialog
+  header="Aplicar a la convocatoria"
+  [modal]="true"
+  [visible]="aplicarVisible()"
+  (visibleChange)="aplicarVisible.set($event)"
+  [style]="{ width: '28rem' }"
+>
+  <div class="flex flex-col gap-4">
+    <p>
+      ¿Quieres aplicar a <strong>{{ convocatoriaAAplicar?.nombre }}</strong>? Se creará tu solicitud en estado
+      Pendiente y después podrás subir tus documentos.
+    </p>
+    @if (errorAplicar()) {
+      <small class="text-red-500">{{ errorAplicar() }}</small>
+    }
+    <div class="flex justify-end gap-2">
+      <p-button label="Volver" severity="secondary" (onClick)="aplicarVisible.set(false)" />
+      <p-button label="Enviar solicitud" [loading]="aplicando()" (onClick)="confirmarAplicar()" />
     </div>
   </div>
 </p-dialog>

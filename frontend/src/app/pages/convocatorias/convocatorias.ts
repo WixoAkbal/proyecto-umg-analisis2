@@ -9,6 +9,8 @@ import { AuthService } from '../../core/auth.service';
 import { TiposBecasService, TipoBeca } from '../tipos-becas/tipos-becas.service';
 import { Convocatoria, ConvocatoriaForm, ConvocatoriasService } from './convocatorias.service';
 import { EstadoConvocatoria, EstadosConvocatoriasService } from './estados-convocatorias.service';
+import { Router } from '@angular/router';
+import { SolicitudesService } from '../solicitudes/solicitudes.service';
 
 @Component({
   selector: 'app-convocatorias',
@@ -20,6 +22,8 @@ export class Convocatorias {
   private readonly tiposService = inject(TiposBecasService);
   private readonly estadosService = inject(EstadosConvocatoriasService);
   private readonly auth = inject(AuthService);
+  private readonly solicitudesService = inject(SolicitudesService);
+  private readonly router = inject(Router);
 
   convocatorias = signal<Convocatoria[]>([]);
   tipos = signal<TipoBeca[]>([]);
@@ -27,6 +31,15 @@ export class Convocatorias {
   cargando = signal(false);
   error = signal('');
   esAdmin = signal(false);
+    esEstudiante = signal(false);
+
+  detalleVisible = signal(false);
+  detalle = signal<Convocatoria | null>(null);
+
+  aplicarVisible = signal(false);
+  aplicando = signal(false);
+  errorAplicar = signal('');
+  convocatoriaAAplicar: Convocatoria | null = null;
 
   dialogoVisible = signal(false);
   guardando = signal(false);
@@ -47,6 +60,7 @@ export class Convocatorias {
   constructor() {
     afterNextRender(() => {
       this.esAdmin.set(this.auth.esAdmin());
+      this.esEstudiante.set(this.auth.tieneRol('ESTUDIANTE'));
       this.cargar();
       this.tiposService.listar().subscribe({ next: (datos) => this.tipos.set(datos) });
       this.estadosService.listar().subscribe({ next: (datos) => this.estados.set(datos) });
@@ -175,6 +189,44 @@ export class Convocatorias {
         this.eliminando.set(false);
         this.errorEliminar.set(
           err.status === 403 ? 'No tienes permiso para eliminar' : 'No se pudo eliminar',
+        );
+      },
+    });
+  }
+    estaActiva(c: Convocatoria): boolean {
+    return c.estadoConvocatoria?.nombre?.toLowerCase() === 'activa';
+  }
+
+  verDetalle(c: Convocatoria): void {
+    this.detalle.set(c);
+    this.detalleVisible.set(true);
+  }
+
+  pedirAplicar(c: Convocatoria): void {
+    this.convocatoriaAAplicar = c;
+    this.errorAplicar.set('');
+    this.aplicarVisible.set(true);
+  }
+
+  confirmarAplicar(): void {
+    if (!this.convocatoriaAAplicar) return;
+
+    this.errorAplicar.set('');
+    this.aplicando.set(true);
+
+    this.solicitudesService.crearPropia(this.convocatoriaAAplicar.id).subscribe({
+      next: () => {
+        this.aplicando.set(false);
+        this.aplicarVisible.set(false);
+        this.router.navigate(['/mis-solicitudes']);
+      },
+      error: (err: HttpErrorResponse) => {
+        this.aplicando.set(false);
+        const m = err.error?.message;
+        this.errorAplicar.set(
+          err.status >= 400 && err.status < 500 && typeof m === 'string'
+            ? m
+            : 'No se pudo enviar la solicitud',
         );
       },
     });
