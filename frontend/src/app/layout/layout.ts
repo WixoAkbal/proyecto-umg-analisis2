@@ -23,7 +23,7 @@ export class Layout {
       this.veSolicitudes.set(this.auth.tieneRol('ADMIN', 'EVALUADOR'));
       this.veMisSolicitudes.set(this.auth.tieneRol('ESTUDIANTE'));
       this.esAdmin.set(this.auth.esAdmin());
-      this.veAutorizaciones.set(this.auth.tieneRol('ADMIN', 'AUTORIZADOR'));
+      this.veAutorizaciones.set(this.auth.tieneRol('ADMIN', 'EVALUADOR', 'AUTORIZADOR'));
 
       const solo =
         this.auth.tieneRol('AUTORIZADOR') &&

@@ -64,8 +64,7 @@ export class MisSolicitudes {
   }
 
   puedeCancelar(s: Solicitud): boolean {
-    const estado = s.estadoSolicitud?.id;
-    return estado === 1 || estado === 2;
+    return s.estadoSolicitud?.id === 1;
   }
 
   etiqueta(nombre: string | undefined): string {

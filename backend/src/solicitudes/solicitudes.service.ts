@@ -235,6 +235,7 @@ export class SolicitudesService {
   ) {
     const solicitudActual = await this.findOne(id);
     const estadoAnteriorId = solicitudActual.estadoSolicitud?.id;
+    const estadoAnteriorNombre = solicitudActual.estadoSolicitud?.nombre;
     const { personaId, convocatoriaId, comiteId, estadoSolicitudId } =
       updateSolicitudeDto;
 
@@ -267,10 +268,16 @@ export class SolicitudesService {
       const destinatarioId = conUsuario?.persona?.usuario?.id;
 
       if (destinatarioId) {
+        const convocatoria =
+          solicitudActualizada.convocatoria?.nombre ?? 'sin convocatoria';
+        const estadoNuevo = solicitudActualizada.estadoSolicitud.nombre;
+
         await this.notificacionesService.create(
           {
             usuarioId: destinatarioId,
-            mensaje: `Tu solicitud cambió a estado: ${solicitudActualizada.estadoSolicitud.nombre}`,
+            mensaje:
+              `Solicitud #${id} de la convocatoria "${convocatoria}": ` +
+              `cambió de "${estadoAnteriorNombre ?? 'sin estado'}" a "${estadoNuevo}".`,
           },
           usuarioId,
         );

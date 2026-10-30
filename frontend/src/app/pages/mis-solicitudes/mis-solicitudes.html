@@ -24,8 +24,8 @@
         <td>{{ etiqueta(s.estadoSolicitud?.nombre) }}</td>
         <td>
           <div class="flex items-center gap-1">
-            <p-button label="Documentos" icon="pi pi-paperclip" [text]="true" (onClick)="verDocumentos(s)" />
             @if (puedeCancelar(s)) {
+              <p-button label="Documentos" icon="pi pi-paperclip" [text]="true" (onClick)="verDocumentos(s)" />
               <p-button label="Cancelar" severity="danger" [text]="true" (onClick)="pedirCancelar(s)" />
             }
           </div>

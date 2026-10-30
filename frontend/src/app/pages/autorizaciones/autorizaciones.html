@@ -51,7 +51,7 @@
             @if (puedeConfirmar() && a.estadoAutorizacion === 'PENDIENTE_CONFIRMACION') {
               <p-button label="Confirmar" icon="pi pi-check" [text]="true" (onClick)="pedirConfirmar(a)" />
             }
-            @if (puedeAutorizar()) {
+            @if (puedeEliminar()) {
               <p-button
                 icon="pi pi-trash"
                 severity="danger"

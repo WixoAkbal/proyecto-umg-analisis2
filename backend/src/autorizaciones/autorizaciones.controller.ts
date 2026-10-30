@@ -11,26 +11,26 @@ import { Role } from '../auth/roles/role.enum';
 export class AutorizacionesController {
   constructor(private readonly autorizacionesService: AutorizacionesService) {}
 
-  @Roles(Role.ADMIN)
+  @Roles(Role.EVALUADOR)
   @Post()
   create(@Body() dto: CreateAutorizacionDto, @Req() request: Request) {
     const usuarioId = (request as any).user.sub;
     return this.autorizacionesService.create(dto, usuarioId);
   }
 
-  @Roles(Role.ADMIN, Role.AUTORIZADOR)
+  @Roles(Role.ADMIN, Role.EVALUADOR, Role.AUTORIZADOR)
   @Get()
   findAll() {
     return this.autorizacionesService.findAll();
   }
 
-  @Roles(Role.ADMIN, Role.AUTORIZADOR)
+  @Roles(Role.ADMIN, Role.EVALUADOR, Role.AUTORIZADOR)
   @Get('pendientes')
   findPendientes() {
     return this.autorizacionesService.findPendientes();
   }
 
-  @Roles(Role.ADMIN, Role.AUTORIZADOR)
+  @Roles(Role.ADMIN, Role.EVALUADOR, Role.AUTORIZADOR)
   @Get(':id')
   findOne(@Param('id', ParseIntPipe) id: number) {
     return this.autorizacionesService.findOne(id);
@@ -43,7 +43,7 @@ export class AutorizacionesController {
     return this.autorizacionesService.confirmar(id, usuarioId);
   }
 
-  @Roles(Role.ADMIN)
+  @Roles(Role.AUTORIZADOR)
   @Delete(':id')
   remove(@Param('id', ParseIntPipe) id: number, @Req() request: Request) {
     const usuarioId = (request as any).user.sub;

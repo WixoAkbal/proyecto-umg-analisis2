@@ -7,7 +7,6 @@ import { Solicitud } from '../solicitudes/entities/solicitude.entity';
 import { User } from '../user/entity/user.entity';
 import { EstadoRegistro } from '../estados-registro/entities/estados-registro.entity';
 
-
 export const LIMITE_SEGUNDA_APROBACION = 10000;
 
 @Injectable()
@@ -23,7 +22,6 @@ export class AutorizacionesService {
     private readonly estadoRegistroRepository: Repository<EstadoRegistro>,
   ) {}
 
- 
   private conEstado(a: Autorizacion) {
     const pendiente = a.requiereConfirmacion && !a.confirmadoPor;
     return { ...a, estadoAutorizacion: pendiente ? 'PENDIENTE_CONFIRMACION' : 'AUTORIZADA' };
@@ -49,7 +47,7 @@ export class AutorizacionesService {
 
     const estadoActivo = await this.estadoRegistroRepository.findOneBy({ nombre: 'activo' });
     if (!estadoActivo) {
-      throw new NotFoundException('No existe el estado "activo" en el catalogó');
+      throw new NotFoundException('No existe el estado "activo" en el catálogo');
     }
 
     const nueva = this.autorizacionRepository.create({
