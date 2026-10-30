@@ -9,7 +9,6 @@ import { TableModule } from '@openng/optimus-ui/table';
 import { AuthService } from '../../core/auth.service';
 import { Autorizacion, AutorizacionesService, SolicitudResumen } from './autorizaciones.service';
 
-
 const LIMITE_SEGUNDA_APROBACION = 10000;
 
 @Component({
@@ -28,6 +27,7 @@ export class Autorizaciones {
 
   puedeAutorizar = signal(false);
   puedeConfirmar = signal(false);
+  puedeEliminar = signal(false);
 
   dialogoVisible = signal(false);
   guardando = signal(false);
@@ -53,8 +53,9 @@ export class Autorizaciones {
 
   constructor() {
     afterNextRender(() => {
-      this.puedeAutorizar.set(this.auth.tieneRol('ADMIN'));
+      this.puedeAutorizar.set(this.auth.tieneRol('EVALUADOR'));
       this.puedeConfirmar.set(this.auth.tieneRol('AUTORIZADOR'));
+      this.puedeEliminar.set(this.auth.tieneRol('AUTORIZADOR'));
       this.cargar();
       if (this.puedeAutorizar()) {
         this.service.listarSolicitudes().subscribe({ next: (d) => this.solicitudes.set(d) });
@@ -185,7 +186,9 @@ export class Autorizaciones {
         this.eliminando.set(false);
         this.eliminarVisible.set(false);
         this.cargar();
-        this.service.listarSolicitudes().subscribe({ next: (d) => this.solicitudes.set(d) });
+        if (this.puedeAutorizar()) {
+          this.service.listarSolicitudes().subscribe({ next: (d) => this.solicitudes.set(d) });
+        }
       },
       error: (err: HttpErrorResponse) => {
         this.eliminando.set(false);
