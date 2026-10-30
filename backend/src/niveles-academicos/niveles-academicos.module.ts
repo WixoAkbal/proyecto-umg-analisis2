@@ -8,5 +8,6 @@ import { NivelesAcademico } from './entities/niveles-academico.entity';
   imports: [TypeOrmModule.forFeature([NivelesAcademico])],
   controllers: [NivelesAcademicosController],
   providers: [NivelesAcademicosService],
+  exports: [NivelesAcademicosService]
 })
 export class NivelesAcademicosModule {}

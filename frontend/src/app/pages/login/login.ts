@@ -7,6 +7,7 @@ import { CardModule } from '@openng/optimus-ui/card';
 import { InputTextModule } from '@openng/optimus-ui/inputtext';
 import { PasswordModule } from '@openng/optimus-ui/password';
 import { AuthService } from '../../core/auth.service';
+import Swal, { SweetAlertIcon } from 'sweetalert2';
 
 @Component({
 	selector: 'app-login',
@@ -33,19 +34,28 @@ export class Login {
 		this.error.set('');
 		this.cargando.set(true);
 
-		this.authService.login2(this.username, this.password).subscribe({
+		this.authService.login(this.username, this.password).subscribe({
 			next: () => {
 				this.cargando.set(false);
+				this.showSweetAlert('success', "¡Bienvenido!");
 				this.router.navigate(['/tipos-becas']);
 			},
 			error: (err: HttpErrorResponse) => {
 				this.cargando.set(false);
-				this.error.set(
-					err.status === 401 || err.status === 404
-						? 'Usuario o contraseña incorrectos'
-						: 'No se pudo conectar con el servidor',
-				);
+				this.showSweetAlert('error', err.error.message);
 			},
+		});
+	}
+
+	private showSweetAlert(iconType: SweetAlertIcon, messageEvent: string): void {
+		void Swal.fire({
+			icon: iconType,
+			text: messageEvent,
+			confirmButtonText: 'Entendido',
+			confirmButtonColor: '#7969f2',
+			background: '#ffffff',
+			color: '#242344',
+			allowOutsideClick: false,
 		});
 	}
 }
